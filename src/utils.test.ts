@@ -47,6 +47,7 @@ describe('utils', () => {
         repository: {
           pullRequest: {
             headRefName: 'merge/support/v4-into-master',
+            baseRefName: '',
             title: 'Merge support/v4.x into master',
             body: '',
             number: 1240,
@@ -62,6 +63,7 @@ describe('utils', () => {
         repository: {
           pullRequest: {
             headRefName: 'merge/support/v4-into-master',
+            baseRefName: '',
             title: 'Merge support/v4.x into master',
             body: '',
             number: 1240,
@@ -77,6 +79,7 @@ describe('utils', () => {
         repository: {
           pullRequest: {
             headRefName: 'merge/support/v4-into-master',
+            baseRefName: '',
             title: 'Merge support/v4.x into master',
             body: '',
             number: 1240,
@@ -92,6 +95,7 @@ describe('utils', () => {
         repository: {
           pullRequest: {
             headRefName: 'chore/fix-overflow-tooltips',
+            baseRefName: '',
             title: 'fix(tooltip): Fix OverflowTooltip with SVG icons in IE11',
             body: '',
             number: 1240,
@@ -210,6 +214,7 @@ describe('utils', () => {
             title: '',
             number: 0,
             headRefName: 'merge/support-into-master',
+            baseRefName: '',
           },
         },
       }
@@ -225,6 +230,7 @@ describe('utils', () => {
             title: '',
             number: 0,
             headRefName: '',
+            baseRefName: '',
           },
         },
       }
@@ -240,6 +246,7 @@ describe('utils', () => {
             title: '',
             number: 0,
             headRefName: '',
+            baseRefName: '',
           },
         },
       }
@@ -255,6 +262,7 @@ describe('utils', () => {
             title: '',
             number: 0,
             headRefName: '',
+            baseRefName: '',
           },
         },
       }
@@ -269,12 +277,29 @@ describe('utils', () => {
             body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
             title: 'feat(tooltip): Some new Tooltip feature',
             number: 0,
-            headRefName: 'master',
+            headRefName: '',
+            baseRefName: 'master',
           },
         },
       }
 
       expect(verifyPullRequest(input)).toContain('All features should target a prerelease branch')
+    })
+
+    it('should fail if a feature is included and base branch is not a prerelease branch', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+            title: 'feat(tooltip): Some new Tooltip feature',
+            number: 0,
+            headRefName: '',
+            baseRefName: 'prerelease/v5.3',
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should fail if a breaking change is included and base branch is not a prerelease branch', () => {
@@ -284,7 +309,8 @@ describe('utils', () => {
             body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
             title: 'fix(tooltip): Some breaking tooltip fix',
             number: 0,
-            headRefName: 'master',
+            headRefName: '',
+            baseRefName: 'master',
           },
         },
       }
@@ -292,6 +318,22 @@ describe('utils', () => {
       expect(verifyPullRequest(input)).toContain(
         'All breaking changes should target a prerelease branch',
       )
+    })
+
+    it('should fail if a breaking change is included and base branch is not a prerelease branch', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
+            title: 'fix(tooltip): Some breaking tooltip fix',
+            number: 0,
+            headRefName: '',
+            baseRefName: 'prerelease/v5.3',
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should not fail when all requirements are met', () => {
@@ -302,6 +344,7 @@ describe('utils', () => {
             title: '',
             number: 0,
             headRefName: '',
+            baseRefName: '',
           },
         },
       }

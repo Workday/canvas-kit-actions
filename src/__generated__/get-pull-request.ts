@@ -7,6 +7,7 @@ export type GetPullRequest = {
             title: string;
             number: number;
             headRefName: string;
+            baseRefName: string;
         }) | null;
     }) | null;
 };

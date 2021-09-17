@@ -32,7 +32,7 @@ function getMergeData(prData) {
 exports.getMergeData = getMergeData;
 function verifyPullRequest(prData) {
     var _a;
-    const { title, body, headRefName } = ((_a = prData.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) || {};
+    const { title, body, headRefName, baseRefName } = ((_a = prData.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) || {};
     if (headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('merge/')) {
         return false;
     }
@@ -46,10 +46,10 @@ function verifyPullRequest(prData) {
     if (!sections['release category']) {
         return 'verifyPullRequest: No Category section provided. Be sure the pull request description contains a `## Category` section for release notes';
     }
-    if ((title === null || title === void 0 ? void 0 : title.startsWith('feat')) && !(headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('prerelease'))) {
-        return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${headRefName}'. Please update the base of the pull request to a prerelease branch.`;
+    if ((title === null || title === void 0 ? void 0 : title.startsWith('feat')) && !(baseRefName === null || baseRefName === void 0 ? void 0 : baseRefName.startsWith('prerelease'))) {
+        return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${baseRefName}'. Please update the base of the pull request to a prerelease branch.`;
     }
-    if (sections['breaking changes'] && !(headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('prerelease'))) {
+    if (sections['breaking changes'] && !(baseRefName === null || baseRefName === void 0 ? void 0 : baseRefName.startsWith('prerelease'))) {
         return 'verifyPullRequest: All breaking changes should target a prerelease branch. Please update the base of the pull request to a prerelease branch or remove the breaking change.';
     }
     return false;
