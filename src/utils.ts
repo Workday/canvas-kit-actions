@@ -50,7 +50,7 @@ export function verifyPullRequest(prData: GetPullRequest): false | string {
   }
 
   if (title?.startsWith('feat') && !headRefName?.startsWith('prerelease')) {
-    return 'verifyPullRequest: All features should target a prerelease branch. Please update the base of the pull request to a prerelease branch.'
+    return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${headRefName}'. Please update the base of the pull request to a prerelease branch.`
   }
 
   if (sections['breaking changes'] && !headRefName?.startsWith('prerelease')) {
