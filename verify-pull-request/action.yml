@@ -1,0 +1,13 @@
+name: 'Verify Pull Request'
+description: 'Verify the pull request title and metadata to ensure correct changeset results'
+author: 'Workday'
+inputs:
+  scopes:
+    required: false
+    description: 'Optional scopes to restrict semantic commits to'
+  token:
+    required: true
+    description: 'A github token with at least read access to the repository'
+runs:
+  using: 'node12'
+  main: '../dist/actions/verifyPullRequest.js'

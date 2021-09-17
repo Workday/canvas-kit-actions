@@ -1,0 +1,13 @@
+name: 'Enable Automerge'
+description: 'Enable automerge with the correct strategy depending on PR type'
+author: 'Workday'
+inputs:
+  token:
+    required: true
+    description: 'A github token with at least read access to the repository'
+outputs:
+  strategy:
+    description: 'The merge strategy chosen by this action'
+runs:
+  using: 'node12'
+  main: '../dist/actions/autoMerge.js'

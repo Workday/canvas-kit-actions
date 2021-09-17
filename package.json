@@ -1,0 +1,51 @@
+{
+  "name": "canvas-kit-actions",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Canvas Kit Github Actions",
+  "main": "lib/actions/verify-pull-request.js",
+  "scripts": {
+    "build:tsc": "tsc -p tsconfig.build.json",
+    "build:queries": "ts-graphql-plugin typegen",
+    "build:ncc": "ncc build --source-map --license licenses.txt -o dist/lib src/lib.ts && cp -r lib/* dist && rm dist/lib.js",
+    "build": "npm run build:queries && npm run build:tsc && npm run build:ncc",
+    "clean": "rm -rf dist && rm -rf lib",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Workday/canvas-kit.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "canvas kit"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/github": "^5.0.0",
+    "@octokit/openapi-types": "^10.2.2",
+    "@types/common-tags": "^1.8.1",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.9.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@vercel/ncc": "^0.29.0",
+    "common-tags": "^1.8.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-github": "^4.3.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "graphql": "^15.3.0",
+    "jest": "^27.2.0",
+    "js-yaml": "^4.1.0",
+    "prettier": "^2.4.0",
+    "ts-graphql-plugin": "^2.1.4",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.3"
+  }
+}

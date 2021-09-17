@@ -1,0 +1,26 @@
+name: 'Generate Changeset'
+description: 'Generate a changeset between 2 tags'
+author: 'Workday'
+inputs:
+  token:
+    required: true
+    description: 'A github token with at least read access to the repository'
+  fromRef:
+    required: true
+    description: 'Git ref that marks the beginning of comparison. Tag, SHA, or branch'
+  toRef:
+    required: true
+    description: 'Git ref that marks the end of comparison. Tag, SHA, or branch'
+  tagName:
+    required: true
+    description: 'Desired tag name of the changeset'
+outputs:
+  title:
+    description: 'The title of the changeset in the format of "vX.X.X (Date)"'
+  date:
+    description: 'The date in the same format as the title'
+  body:
+    description: 'The body of the changeset'
+runs:
+  using: 'node12'
+  main: '../dist/actions/generateChangeset.js'
