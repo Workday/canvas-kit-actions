@@ -40,9 +40,6 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                 title
                 number
                 headRefName
-                labels {
-
-                }
               }
             }
           }
