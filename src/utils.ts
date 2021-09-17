@@ -30,7 +30,7 @@ export function getMergeData(prData: GetPullRequest) {
 }
 
 export function verifyPullRequest(prData: GetPullRequest): false | string {
-  const {title, body, headRefName} = prData.repository?.pullRequest || {}
+  const {title, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
 
   if (headRefName?.startsWith('merge/')) {
     return false
@@ -49,11 +49,11 @@ export function verifyPullRequest(prData: GetPullRequest): false | string {
     return 'verifyPullRequest: No Category section provided. Be sure the pull request description contains a `## Category` section for release notes'
   }
 
-  if (title?.startsWith('feat') && !headRefName?.startsWith('prerelease')) {
-    return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${headRefName}'. Please update the base of the pull request to a prerelease branch.`
+  if (title?.startsWith('feat') && !baseRefName?.startsWith('prerelease')) {
+    return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${baseRefName}'. Please update the base of the pull request to a prerelease branch.`
   }
 
-  if (sections['breaking changes'] && !headRefName?.startsWith('prerelease')) {
+  if (sections['breaking changes'] && !baseRefName?.startsWith('prerelease')) {
     return 'verifyPullRequest: All breaking changes should target a prerelease branch. Please update the base of the pull request to a prerelease branch or remove the breaking change.'
   }
 
