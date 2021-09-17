@@ -1,0 +1,10 @@
+{
+  "repository": {
+    "pullRequest": {
+      "body": "## Summary\r\n\r\nUpdate the pull request template to include sections that are important to release automation.\r\n\r\n<!-- This is the category in the release notes. Common categories are Components, Infrastructure, and Documentation -->\r\n### Category\r\nInfrastructure\r\n\r\n---",
+      "title": "chore: Update pull request template",
+      "number": 1268,
+      "headRefName": "chore/update-pull-request-template"
+    }
+  }
+}
