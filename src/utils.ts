@@ -296,4 +296,6 @@ export function getChangelogEntry(owner: string, repo: string, commits: Commits,
   return `${title}\n\n${body}`
 }
 
-export function enableAutoMerge(prData: GetPullRequest): string {}
+export function enableAutoMerge(prData: GetPullRequest): string {
+  return 'merge'
+}
