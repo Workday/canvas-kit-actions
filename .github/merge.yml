@@ -1,0 +1,49 @@
+name: Merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        # with:
+        #   persist-credentials: false
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      ## The caching steps create a cache key based on the OS and hash of the yarn.lock file. A
+      ## cache hit will copy files from Github cache into the `node_modules` and `.cache/cypress`
+      ## folders. A cache hit will skip the cache steps
+      - name: Cache node modules
+        id: yarn-cache
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-hash-${{ hashFiles('yarn.lock') }}
+
+      ## If both `node_modules` and `.cache/cypress` were cache hits, we're going to skip the `yarn
+      ## install` step. This effectively saves up to 3m on a cache hit build.
+      - name: Install Packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      # - name: Config git user
+      #   run: |
+      #     git config --global user.name "${{ github.actor }}"
+      #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish Action
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: v1
+          folder: .
