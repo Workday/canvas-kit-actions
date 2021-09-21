@@ -44,7 +44,7 @@ function verifyPullRequest(prData) {
         return 'verifyPullRequest: No Summary section provided. Be sure the pull request description contains a `## Summary` section';
     }
     if (!sections['release category']) {
-        return 'verifyPullRequest: No Category section provided. Be sure the pull request description contains a `## Category` section for release notes';
+        return 'verifyPullRequest: No Category section provided. Be sure the pull request description contains a `## Release Category` section or `![category](https://img.shields.io/badge/release_category-Components-blue)` for release notes';
     }
     if ((title === null || title === void 0 ? void 0 : title.startsWith('feat')) && !(baseRefName === null || baseRefName === void 0 ? void 0 : baseRefName.startsWith('prerelease'))) {
         return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${baseRefName}'. Please update the base of the pull request to a prerelease branch.`;
