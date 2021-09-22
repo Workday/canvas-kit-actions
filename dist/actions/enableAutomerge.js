@@ -5,9 +5,15 @@ const repo_1 = require("../repo");
 const utils_1 = require("../utils");
 async function run() {
     var _a, _b;
-    const token = lib_1.actionsCore.getInput('token');
-    const number = lib_1.actionsCore.getInput('number');
-    const repo = (0, repo_1.getRepo)({ token, ...lib_1.actionsGithub.context.repo });
+    // const token = core.getInput('token')
+    // const number = core.getInput('number')
+    // const repo = getRepo({token, ...github.context.repo})
+    const repo = (0, repo_1.getRepo)({
+        token: process.env.GITHUB_TOKEN_COM || '',
+        owner: 'NicholasBoll',
+        repo: 'canvas-kit',
+    });
+    const number = undefined;
     let prNumber;
     if (number) {
         prNumber = Number(number);
@@ -25,7 +31,7 @@ async function run() {
     if (!id) {
         throw new Error(`Pull request id not found for ${prNumber}`);
     }
-    repo.enableAutoMerge({
+    await repo.enableAutoMerge({
         id,
         ...mergeData,
     });
