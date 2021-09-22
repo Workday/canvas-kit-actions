@@ -1,5 +1,9 @@
 import {actionsGithub} from './lib'
 import {
+  DisablePullRequestAutoMerge,
+  DisablePullRequestAutoMergeVariables,
+} from './__generated__/disable-pull-request-auto-merge'
+import {
   EnablePullRequestAutoMerge,
   EnablePullRequestAutoMergeVariables,
 } from './__generated__/enable-pull-request-auto-merge'
@@ -100,6 +104,20 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
           }
         `,
         input,
+      )
+    },
+
+    async disableAutoMerge(input: DisablePullRequestAutoMergeVariables) {
+      return octokit.graphql<DisablePullRequestAutoMerge>(
+        gql`
+          mutation DisablePullRequestAutoMerge($id: ID!) {
+            disablePullRequestAutoMerge(input: {pullRequestId: $id}) {
+              pullRequest {
+                id
+              }
+            }
+          }
+        `,
       )
     },
   }

@@ -81,6 +81,17 @@ function getRepo({ token, owner, repo }) {
           }
         `, input);
         },
+        async disableAutoMerge(input) {
+            return octokit.graphql(gql `
+          mutation DisablePullRequestAutoMerge($id: ID!) {
+            disablePullRequestAutoMerge(input: {pullRequestId: $id}) {
+              pullRequest {
+                id
+              }
+            }
+          }
+        `);
+        },
     };
     return repository;
 }
