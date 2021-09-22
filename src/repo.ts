@@ -118,6 +118,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
             }
           }
         `,
+        input,
       )
     },
   }

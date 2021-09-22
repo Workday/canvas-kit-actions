@@ -90,7 +90,7 @@ function getRepo({ token, owner, repo }) {
               }
             }
           }
-        `);
+        `, input);
         },
     };
     return repository;
