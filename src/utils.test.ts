@@ -52,6 +52,7 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
+            autoMergeRequest: null,
           },
         },
       })
@@ -69,6 +70,7 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
+            autoMergeRequest: null,
           },
         },
       })
@@ -86,6 +88,7 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
+            autoMergeRequest: null,
           },
         },
       })
@@ -103,6 +106,7 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
+            autoMergeRequest: null,
           },
         },
       })
@@ -220,6 +224,7 @@ describe('utils', () => {
             headRefName: 'merge/support-into-master',
             baseRefName: '',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -237,6 +242,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: '',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -254,6 +260,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: '',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -271,6 +278,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: '',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -288,6 +296,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: 'master',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -305,6 +314,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: 'prerelease/v5.3',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -322,6 +332,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: 'master',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -341,6 +352,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: 'prerelease/v5.3',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }
@@ -358,6 +370,7 @@ describe('utils', () => {
             headRefName: '',
             baseRefName: '',
             id: '',
+            autoMergeRequest: null,
           },
         },
       }

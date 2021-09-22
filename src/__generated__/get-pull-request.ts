@@ -9,6 +9,11 @@ export type GetPullRequest = {
             headRefName: string;
             baseRefName: string;
             id: string;
+            autoMergeRequest: ({
+                commitBody: string | null;
+                commitHeadline: string | null;
+                enabledAt: any | null;
+            }) | null;
         }) | null;
     }) | null;
 };
