@@ -1,10 +1,12 @@
 {
   "repository": {
     "pullRequest": {
-      "body": "## Summary\r\n\r\nUpdate the pull request template to include sections that are important to release automation.\r\n\r\n<!-- This is the category in the release notes. Common categories are Components, Infrastructure, and Documentation -->\r\n### Category\r\nInfrastructure\r\n\r\n---",
-      "title": "chore: Update pull request template",
-      "number": 1268,
-      "headRefName": "chore/update-pull-request-template"
+      "body": "## Summary\r\n\r\nResolves #1215\r\n\r\nThis PR:\r\n\r\n- Moves `SearchBar` and related exports to a new labs package: `search-form`:\r\n  - `SearchBar`\r\n  -` SearchBarProps`\r\n  - `SearchBarState`\r\n  - `SearchThemeAttributes`\r\n  - `SearchThemes`\r\n- Renames `SearchBar` and related exports\r\n  - `SearchForm`\r\n  -` SearchFormProps`\r\n  - `SearchFormState`\r\n- Updates `Header` README\r\n- Updates `Header` stories\r\n- Updates `SearchForm` docs to MDX\r\n- Adds `SearchBar` transform to the v6 codemod\r\n- Update V6 migration guide\r\n\r\n## Checklist\r\n\r\n<!-- Remove items that do not apply. For completed items, change [ ] to [x]. -->\r\n\r\n- [ ] branch has been rebased on the latest master commit\r\n- [ ] tests are changed or added\r\n- [ ] `yarn test` passes\r\n- [ ] all (dev)dependencies that the module needs is added to its `package.json`\r\n- [ ] code has been documented and, if applicable, usage described in README.md\r\n- [ ] module has been added to `canvas-kit-react` and/or `canvas-kit-css` universal modules, if\r\n      applicable\r\n- [ ] design approved final implementation\r\n- [ ] a11y approved final implementation\r\n- [ ] code adheres to the [API & Pattern guidelines](../modules/docs/mdx/API_PATTERN_GUIDELINES.mdx)\r\n",
+      "title": "feat: Rename SearchBar to SearchForm and move to own package",
+      "number": 1267,
+      "headRefName": "ISSUE-1215",
+      "baseRefName": "prerelease/v6",
+      "id": "PR_kwDOCwpuNs4rwKw8"
     }
   }
 }

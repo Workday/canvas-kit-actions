@@ -1,21 +1,31 @@
 import {getRepo} from '../repo'
+import {getMergeData} from '../utils'
 const fs = require('fs')
 
 const repository = getRepo({
   token: process.env.GITHUB_TOKEN_COM || '',
-  owner: 'Workday',
+  owner: 'NicholasBoll',
   repo: 'canvas-kit',
 })
 
 async function run() {
-  const response = await repository.getCommits({
-    head: 'master',
-    base: '5.2.0',
+  // const response = await repository.getCommits({
+  //   head: 'master',
+  //   base: '5.2.0',
+  // })
+
+  const prData = await repository.getPullRequest(8)
+
+  // fs.writeFileSync('./fixtures/getPullRequestMessage.json', JSON.stringify(prData, null, '  '))
+  const data = getMergeData(prData)
+  const id = prData.repository?.pullRequest?.id!
+
+  const mergeResponse = await repository.enableAutoMerge({
+    id,
+    ...data,
   })
 
-  // const response = await repository.getPullRequestMessage(1268)
-
-  fs.writeFileSync('./fixtures/getCommits2.json', JSON.stringify(response, null, '  '))
+  console.log(JSON.stringify(mergeResponse, null, '  '))
 }
 
 run()

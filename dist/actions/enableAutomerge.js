@@ -4,6 +4,7 @@ const lib_1 = require("../lib");
 const repo_1 = require("../repo");
 const utils_1 = require("../utils");
 async function run() {
+    var _a, _b;
     try {
         const token = lib_1.actionsCore.getInput('token');
         const number = lib_1.actionsCore.getInput('number');
@@ -20,10 +21,16 @@ async function run() {
             prNumber = pull_request.number;
         }
         const prData = await repo.getPullRequest(prNumber);
-        const error = (0, utils_1.verifyPullRequest)(prData);
-        if (error) {
-            throw new Error(error);
+        const mergeData = (0, utils_1.getMergeData)(prData);
+        const id = (_b = (_a = prData.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.id;
+        if (!id) {
+            throw new Error(`Pull request id not found for ${prNumber}`);
         }
+        repo.enableAutoMerge({
+            id,
+            ...mergeData,
+        });
+        lib_1.actionsCore.setOutput('strategy', mergeData.mergeMethod);
     }
     catch (e) {
         if (e instanceof Error) {

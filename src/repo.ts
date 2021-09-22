@@ -1,4 +1,8 @@
 import {actionsGithub} from './lib'
+import {
+  EnablePullRequestAutoMerge,
+  EnablePullRequestAutoMergeVariables,
+} from './__generated__/enable-pull-request-auto-merge'
 import {GetPullRequest} from './__generated__/get-pull-request'
 
 const gql = (strings: TemplateStringsArray): string => strings.raw[0]
@@ -30,7 +34,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
       // return octokit.rest.git.getRef({repo, owner, ref: `heads/master`})
     },
 
-    async getPullRequestMessage(number: number) {
+    async getPullRequest(number: number) {
       return octokit.graphql<GetPullRequest>(
         gql`
           query GetPullRequest($owner: String!, $repo: String!, $number: Int!) {
@@ -41,6 +45,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                 number
                 headRefName
                 baseRefName
+                id
               }
             }
           }
@@ -57,6 +62,40 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
       //     },
       //   },
       // })
+    },
+
+    async enableAutoMerge(input: EnablePullRequestAutoMergeVariables) {
+      return octokit.graphql<EnablePullRequestAutoMerge>(
+        gql`
+          mutation EnablePullRequestAutoMerge(
+            $id: ID!
+            $mergeMethod: PullRequestMergeMethod
+            $commitHeadline: String
+            $commitBody: String
+          ) {
+            enablePullRequestAutoMerge(
+              input: {
+                pullRequestId: $id
+                mergeMethod: $mergeMethod
+                commitHeadline: $commitHeadline
+                commitBody: $commitBody
+              }
+            ) {
+              pullRequest {
+                id
+                state
+                autoMergeRequest {
+                  enabledAt
+                  enabledBy {
+                    login
+                  }
+                }
+              }
+            }
+          }
+        `,
+        input,
+      )
     },
   }
 

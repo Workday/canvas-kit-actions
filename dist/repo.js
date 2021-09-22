@@ -20,7 +20,7 @@ function getRepo({ token, owner, repo }) {
             });
             // return octokit.rest.git.getRef({repo, owner, ref: `heads/master`})
         },
-        async getPullRequestMessage(number) {
+        async getPullRequest(number) {
             return octokit.graphql(gql `
           query GetPullRequest($owner: String!, $repo: String!, $number: Int!) {
             repository(owner: $owner, name: $repo) {
@@ -30,6 +30,7 @@ function getRepo({ token, owner, repo }) {
                 number
                 headRefName
                 baseRefName
+                id
               }
             }
           }
@@ -44,6 +45,36 @@ function getRepo({ token, owner, repo }) {
             //     },
             //   },
             // })
+        },
+        async enableAutoMerge(input) {
+            return octokit.graphql(gql `
+          mutation EnablePullRequestAutoMerge(
+            $id: ID!
+            $mergeMethod: PullRequestMergeMethod
+            $commitHeadline: String
+            $commitBody: String
+          ) {
+            enablePullRequestAutoMerge(
+              input: {
+                pullRequestId: $id
+                mergeMethod: $mergeMethod
+                commitHeadline: $commitHeadline
+                commitBody: $commitBody
+              }
+            ) {
+              pullRequest {
+                id
+                state
+                autoMergeRequest {
+                  enabledAt
+                  enabledBy {
+                    login
+                  }
+                }
+              }
+            }
+          }
+        `, input);
         },
     };
     return repository;

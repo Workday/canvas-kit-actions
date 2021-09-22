@@ -1,5 +1,5 @@
-name: 'Verify Pull Request'
-description: 'Verify the pull request title and metadata to ensure correct changeset results'
+name: 'Enable Automerge'
+description: 'Enable Automerge with conventional commit headline, body, and merge strategy'
 author: 'Workday'
 inputs:
   token:

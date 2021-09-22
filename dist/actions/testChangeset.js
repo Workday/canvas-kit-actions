@@ -1,19 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const repo_1 = require("../repo");
+const utils_1 = require("../utils");
 const fs = require('fs');
 const repository = (0, repo_1.getRepo)({
     token: process.env.GITHUB_TOKEN_COM || '',
-    owner: 'Workday',
+    owner: 'NicholasBoll',
     repo: 'canvas-kit',
 });
 async function run() {
-    const response = await repository.getCommits({
-        head: 'master',
-        base: '5.2.0',
+    // const response = await repository.getCommits({
+    //   head: 'master',
+    //   base: '5.2.0',
+    // })
+    var _a, _b;
+    const prData = await repository.getPullRequest(8);
+    // fs.writeFileSync('./fixtures/getPullRequestMessage.json', JSON.stringify(prData, null, '  '))
+    const data = (0, utils_1.getMergeData)(prData);
+    const id = (_b = (_a = prData.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.id;
+    const mergeResponse = await repository.enableAutoMerge({
+        id,
+        ...data,
     });
-    // const response = await repository.getPullRequestMessage(1268)
-    fs.writeFileSync('./fixtures/getCommits2.json', JSON.stringify(response, null, '  '));
+    console.log(JSON.stringify(mergeResponse, null, '  '));
 }
 run();
 // const query = gql`

@@ -23,9 +23,9 @@ ${sections['breaking changes'] ? `### BREAKING CHANGES\n${sections['breaking cha
 export function getMergeData(prData: GetPullRequest) {
   const {title, number, body, headRefName} = prData.repository?.pullRequest || {}
   return {
-    title: headRefName?.startsWith('merge/') ? title : `${title} (#${number})`,
-    message: getCommitBody(getSections(body || '')),
-    strategy: headRefName?.startsWith('merge/') ? 'merge' : 'squash',
+    commitHeadline: headRefName?.startsWith('merge/') ? title : `${title} (#${number})`,
+    commitBody: getCommitBody(getSections(body || '')),
+    mergeMethod: headRefName?.startsWith('merge/') ? 'MERGE' : ('SQUASH' as 'MERGE' | 'SQUASH'),
   }
 }
 
@@ -294,8 +294,4 @@ export function getChangelogEntry(owner: string, repo: string, commits: Commits,
   const {title, body} = getReleaseNotes(owner, repo, commits, tagName)
 
   return `${title}\n\n${body}`
-}
-
-export function enableAutoMerge(prData: GetPullRequest): string {
-  return 'merge'
 }
