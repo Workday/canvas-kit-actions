@@ -8,6 +8,7 @@ export type GetPullRequest = {
             number: number;
             headRefName: string;
             baseRefName: string;
+            id: string;
         }) | null;
     }) | null;
 };

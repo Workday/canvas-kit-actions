@@ -51,27 +51,29 @@ describe('utils', () => {
             title: 'Merge support/v4.x into master',
             body: '',
             number: 1240,
+            id: '',
           },
         },
       })
 
-      expect(expected).toHaveProperty('strategy', 'merge')
+      expect(expected).toHaveProperty('mergeMethod', 'MERGE')
     })
 
     it('should return a squash strategy with a normal headRefName', () => {
       const expected = getMergeData({
         repository: {
           pullRequest: {
-            headRefName: 'merge/support/v4-into-master',
+            headRefName: 'feat/add-rtl',
             baseRefName: '',
-            title: 'Merge support/v4.x into master',
+            title: 'feat(tooltip): Add RTL support',
             body: '',
             number: 1240,
+            id: '',
           },
         },
       })
 
-      expect(expected).toHaveProperty('strategy', 'merge')
+      expect(expected).toHaveProperty('mergeMethod', 'SQUASH')
     })
 
     it('should return the title with a merge headRefName', () => {
@@ -83,11 +85,12 @@ describe('utils', () => {
             title: 'Merge support/v4.x into master',
             body: '',
             number: 1240,
+            id: '',
           },
         },
       })
 
-      expect(expected).toHaveProperty('title', 'Merge support/v4.x into master')
+      expect(expected).toHaveProperty('commitHeadline', 'Merge support/v4.x into master')
     })
 
     it('should return the formatted title with a normal headRefName', () => {
@@ -99,12 +102,13 @@ describe('utils', () => {
             title: 'fix(tooltip): Fix OverflowTooltip with SVG icons in IE11',
             body: '',
             number: 1240,
+            id: '',
           },
         },
       })
 
       expect(expected).toHaveProperty(
-        'title',
+        'commitHeadline',
         'fix(tooltip): Fix OverflowTooltip with SVG icons in IE11 (#1240)',
       )
     })
@@ -215,6 +219,7 @@ describe('utils', () => {
             number: 0,
             headRefName: 'merge/support-into-master',
             baseRefName: '',
+            id: '',
           },
         },
       }
@@ -231,6 +236,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: '',
+            id: '',
           },
         },
       }
@@ -247,6 +253,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: '',
+            id: '',
           },
         },
       }
@@ -263,6 +270,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: '',
+            id: '',
           },
         },
       }
@@ -279,6 +287,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: 'master',
+            id: '',
           },
         },
       }
@@ -295,6 +304,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: 'prerelease/v5.3',
+            id: '',
           },
         },
       }
@@ -311,6 +321,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: 'master',
+            id: '',
           },
         },
       }
@@ -329,6 +340,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: 'prerelease/v5.3',
+            id: '',
           },
         },
       }
@@ -345,6 +357,7 @@ describe('utils', () => {
             number: 0,
             headRefName: '',
             baseRefName: '',
+            id: '',
           },
         },
       }
