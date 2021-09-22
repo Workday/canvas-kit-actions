@@ -3,9 +3,15 @@ import {getRepo} from '../repo'
 import {getMergeData} from '../utils'
 
 async function run() {
-  const token = core.getInput('token')
-  const number = core.getInput('number')
-  const repo = getRepo({token, ...github.context.repo})
+  // const token = core.getInput('token')
+  // const number = core.getInput('number')
+  // const repo = getRepo({token, ...github.context.repo})
+  const repo = getRepo({
+    token: process.env.GITHUB_TOKEN_COM || '',
+    owner: 'NicholasBoll',
+    repo: 'canvas-kit',
+  })
+  const number = undefined
 
   let prNumber: number
 
@@ -28,7 +34,7 @@ async function run() {
     throw new Error(`Pull request id not found for ${prNumber}`)
   }
 
-  repo.enableAutoMerge({
+  await repo.enableAutoMerge({
     id,
     ...mergeData,
   })
