@@ -28,6 +28,11 @@ async function run() {
     throw new Error(`Pull request id not found for ${prNumber}`)
   }
 
+  if (prData.repository?.pullRequest?.autoMergeRequest) {
+    // There is already an automerge request... We must disable and re-enable because enabling twice does not update the message
+    await repo.disableAutoMerge({id})
+  }
+
   await repo.enableAutoMerge({
     id,
     ...mergeData,
