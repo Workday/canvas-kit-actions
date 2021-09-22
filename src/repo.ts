@@ -46,6 +46,11 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                 headRefName
                 baseRefName
                 id
+                autoMergeRequest {
+                  commitBody
+                  commitHeadline
+                  enabledAt
+                }
               }
             }
           }

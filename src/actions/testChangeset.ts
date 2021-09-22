@@ -16,16 +16,16 @@ async function run() {
 
   const prData = await repository.getPullRequest(8)
 
-  // fs.writeFileSync('./fixtures/getPullRequestMessage.json', JSON.stringify(prData, null, '  '))
-  const data = getMergeData(prData)
-  const id = prData.repository?.pullRequest?.id!
+  fs.writeFileSync('./fixtures/getPullRequestMessage.json', JSON.stringify(prData, null, '  '))
+  // const data = getMergeData(prData)
+  // const id = prData.repository?.pullRequest?.id!
 
-  const mergeResponse = await repository.enableAutoMerge({
-    id,
-    ...data,
-  })
+  // const mergeResponse = await repository.enableAutoMerge({
+  //   id,
+  //   ...data,
+  // })
 
-  console.log(JSON.stringify(mergeResponse, null, '  '))
+  // console.log(JSON.stringify(mergeResponse, null, '  '))
 }
 
 run()
