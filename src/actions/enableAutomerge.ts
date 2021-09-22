@@ -3,15 +3,9 @@ import {getRepo} from '../repo'
 import {getMergeData} from '../utils'
 
 async function run() {
-  // const token = core.getInput('token')
-  // const number = core.getInput('number')
-  // const repo = getRepo({token, ...github.context.repo})
-  const repo = getRepo({
-    token: process.env.GITHUB_TOKEN_COM || '',
-    owner: 'NicholasBoll',
-    repo: 'canvas-kit',
-  })
-  const number = undefined
+  const token = core.getInput('token')
+  const number = core.getInput('number')
+  const repo = getRepo({token, ...github.context.repo})
 
   let prNumber: number
 
