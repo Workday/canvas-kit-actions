@@ -168,7 +168,8 @@ exports.getCommitParts = getCommitParts;
 function getReleaseCommitTitle(input, owner, repo, login) {
     const baseUrl = 'https://github.com';
     // - fix: Add crossorigin to font preloads [#967](https://github.com/Workday/canvas-kit/pull/967) [@NicholasBoll](https://github.com/NicholasBoll)
-    return `${input.title}${input.pull_request ? ` (${getPRLink(owner, repo, input.pull_request)})` : ''} ([@${login}](${baseUrl}/${login}))`;
+    // remove `[skip ci]` and `[skip release]` from commit message in the notes
+    return `${input.title.replace(' [skip ci]', '').replace(' [skip release]', '')}${input.pull_request ? ` (${getPRLink(owner, repo, input.pull_request)})` : ''} ([@${login}](${baseUrl}/${login}))`;
 }
 exports.getReleaseCommitTitle = getReleaseCommitTitle;
 function getPRLink(owner, repo, pull_request) {
