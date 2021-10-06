@@ -338,16 +338,34 @@ describe('utils', () => {
       }
 
       expect(verifyPullRequest(input)).toContain(
-        'All breaking changes should target a prerelease branch',
+        'All breaking changes should target the "prerelease/major" branch',
       )
     })
 
-    it('should fail if a breaking change is included and base branch is not a prerelease branch', () => {
+    it('should not fail if a breaking change is included and prerelease/major', () => {
       const input = {
         repository: {
           pullRequest: {
             body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
             title: 'fix(tooltip): Some breaking tooltip fix',
+            number: 0,
+            headRefName: '',
+            baseRefName: 'prerelease/major',
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toEqual(false)
+    })
+
+    it('should fail if [skip ci] is detected in the PR title', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
+            title: 'fix(tooltip): Some breaking tooltip fix [skip ci]',
             number: 0,
             headRefName: '',
             baseRefName: 'prerelease/minor',
@@ -357,7 +375,7 @@ describe('utils', () => {
         },
       }
 
-      expect(verifyPullRequest(input)).toEqual(false)
+      expect(verifyPullRequest(input)).toContain('Do not use [skip ci]')
     })
 
     it('should not fail when all requirements are met', () => {
