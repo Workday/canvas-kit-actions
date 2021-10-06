@@ -734,7 +734,7 @@
           "email": "noreply@github.com",
           "date": "2021-08-27T20:51:00Z"
         },
-        "message": "ci: Filter Travis jobs \n\n- Disable Travis on all pull requests\r\n- Disable `support-release` for non-support branches",
+        "message": "ci: Filter Travis jobs [skip ci] \n\n- Disable Travis on all pull requests\r\n- Disable `support-release` for non-support branches",
         "tree": {
           "sha": "b8a3c34e05f897a470e503e0b9a41175ab1a5236",
           "url": "https://api.github.com/repos/Workday/canvas-kit/git/trees/b8a3c34e05f897a470e503e0b9a41175ab1a5236"
@@ -813,7 +813,7 @@
           "email": "noreply@github.com",
           "date": "2021-08-27T21:09:12Z"
         },
-        "message": "ci: Fix Travis support branch",
+        "message": "ci: Fix Travis support branch [skip release]",
         "tree": {
           "sha": "15dbd75ab52e7236ff1d34ca0812fdffbdc91825",
           "url": "https://api.github.com/repos/Workday/canvas-kit/git/trees/15dbd75ab52e7236ff1d34ca0812fdffbdc91825"
