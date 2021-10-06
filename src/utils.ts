@@ -42,6 +42,9 @@ export function verifyPullRequest(prData: GetPullRequest): false | string {
 
   const sections = getSections(body)
 
+  if (title?.includes('[skip ci]')) {
+    return 'verifyPullRequest: Do not use [skip ci]. Use [skip release] instead to skip automated releases.'
+  }
   if (!sections.summary) {
     return 'verifyPullRequest: No Summary section provided. Be sure the pull request description contains a `## Summary` section'
   }
@@ -53,8 +56,8 @@ export function verifyPullRequest(prData: GetPullRequest): false | string {
     return `verifyPullRequest: All features should target a prerelease branch. Target branch name: '${baseRefName}'. Please update the base of the pull request to a prerelease branch.`
   }
 
-  if (sections['breaking changes'] && !baseRefName?.startsWith('prerelease')) {
-    return 'verifyPullRequest: All breaking changes should target a prerelease branch. Please update the base of the pull request to a prerelease branch or remove the breaking change.'
+  if (sections['breaking changes'] && baseRefName !== 'prerelease/major') {
+    return 'verifyPullRequest: All breaking changes should target the "prerelease/major" branch. Please update the base of the pull request to "prerelease/major" branch or remove the breaking change.'
   }
 
   return false
