@@ -22,9 +22,12 @@ ${sections['breaking changes'] ? `### BREAKING CHANGES\n${sections['breaking cha
  */
 export function getMergeData(prData: GetPullRequest) {
   const {title, number, body, headRefName} = prData.repository?.pullRequest || {}
+  const sections = getSections(body || '')
   return {
-    commitHeadline: headRefName?.startsWith('merge/') ? title : `${title} (#${number})`,
-    commitBody: getCommitBody(getSections(body || '')),
+    commitHeadline: headRefName?.startsWith('merge/')
+      ? title
+      : `${sections['breaking changes'] ? title?.replace(': ', '!: ') : title} (#${number})`,
+    commitBody: getCommitBody(sections),
     mergeMethod: headRefName?.startsWith('merge/') ? 'MERGE' : ('SQUASH' as 'MERGE' | 'SQUASH'),
   }
 }
@@ -190,7 +193,7 @@ export function getCommitParts(input: string): CommitParts {
       .trim()
   }
 
-  return {title, pull_request, category, ...sections}
+  return {title: title.replace('!: ', ': '), pull_request, category, ...sections}
 }
 
 export function getReleaseCommitTitle(

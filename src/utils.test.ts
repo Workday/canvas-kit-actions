@@ -3,7 +3,6 @@ import {
   getCommitBody,
   getCommitParts,
   getMergeData,
-  getReleaseNotes,
   getReleaseTitle,
   getSections,
   verifyPullRequest,
@@ -16,7 +15,7 @@ import {promisify} from 'util'
 const readFile = promisify(fs.readFile)
 
 describe('utils', () => {
-  describe('getCommitMessage', () => {
+  describe('getCommitBody', () => {
     it('should format the commit message', () => {
       const input = {
         summary: 'My summary',
@@ -116,6 +115,30 @@ describe('utils', () => {
         'fix(tooltip): Fix OverflowTooltip with SVG icons in IE11 (#1240)',
       )
     })
+
+    it('should add the breaking indicator to the title for breaking changes', () => {
+      const expected = getMergeData({
+        repository: {
+          pullRequest: {
+            headRefName: 'chore/fix-overflow-tooltips',
+            baseRefName: '',
+            title: 'fix(tooltip): Fix OverflowTooltip with SVG icons in IE11',
+            body: stripIndent`
+            ### BREAKING CHANGES
+            Some breaking changes
+            `,
+            number: 1240,
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      })
+
+      expect(expected).toHaveProperty(
+        'commitHeadline',
+        'fix(tooltip)!: Fix OverflowTooltip with SVG icons in IE11 (#1240)',
+      )
+    })
   })
 
   describe('getSections', () => {
@@ -170,6 +193,7 @@ describe('utils', () => {
   })
 
   describe('getCommitParts', () => {
+    // it('should leave the ')
     it('should extract the parts of a commit message', () => {
       const input = stripIndent`
       feat(tooltip): Fix OverflowTooltip with SVG icons in IE11 (#1234)
@@ -191,6 +215,20 @@ describe('utils', () => {
         category: 'Components',
         'release note': 'My release notes',
         'breaking change': 'Some breaking changes',
+      }
+
+      expect(getCommitParts(input)).toEqual(expected)
+    })
+
+    it('should remove the breaking indicator from the title', () => {
+      const input = stripIndent`
+      feat(tooltip)!: Fix OverflowTooltip with SVG icons in IE11 (#1234)
+      `
+
+      const expected = {
+        title: 'feat(tooltip): Fix OverflowTooltip with SVG icons in IE11',
+        pull_request: '1234',
+        category: 'Components',
       }
 
       expect(getCommitParts(input)).toEqual(expected)
