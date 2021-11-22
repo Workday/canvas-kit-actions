@@ -38,6 +38,8 @@ async function run() {
     ...mergeData,
   })
 
+  core.info(`title:\n${mergeData.commitHeadline}`)
+  core.info(`body:\n${mergeData.commitBody}`)
   core.setOutput('strategy', mergeData.mergeMethod)
 }
 

@@ -33,6 +33,8 @@ async function run() {
         id,
         ...mergeData,
     });
+    lib_1.actionsCore.info(`title:\n${mergeData.commitHeadline}`);
+    lib_1.actionsCore.info(`body:\n${mergeData.commitBody}`);
     lib_1.actionsCore.setOutput('strategy', mergeData.mergeMethod);
 }
 run().catch(e => {
