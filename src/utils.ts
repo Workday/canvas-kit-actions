@@ -21,13 +21,13 @@ ${sections['breaking changes'] ? `### BREAKING CHANGES\n${sections['breaking cha
  * Determine auto merge data from a PR
  */
 export function getMergeData(prData: GetPullRequest) {
-  const {title, number, body, headRefName} = prData.repository?.pullRequest || {}
+  const {title, number, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
   const sections = getSections(body || '')
   return {
-    commitHeadline: headRefName?.startsWith('merge/')
-      ? title
-      : `${sections['breaking changes'] ? title?.replace(': ', '!: ') : title} (#${number})`,
-    commitBody: getCommitBody(sections),
+    commitHeadline: `${
+      sections['breaking changes'] ? title?.replace(': ', '!: ') : title
+    } (#${number})`,
+    commitBody: headRefName?.startsWith('merge/') ? '' : getCommitBody(sections),
     mergeMethod: headRefName?.startsWith('merge/') ? 'MERGE' : ('SQUASH' as 'MERGE' | 'SQUASH'),
   }
 }

@@ -83,7 +83,7 @@ describe('utils', () => {
           pullRequest: {
             headRefName: 'merge/support/v4-into-master',
             baseRefName: '',
-            title: 'Merge support/v4.x into master',
+            title: 'chore: Merge support/v4.x into master',
             body: '',
             number: 1240,
             id: '',
@@ -92,7 +92,10 @@ describe('utils', () => {
         },
       })
 
-      expect(expected).toHaveProperty('commitHeadline', 'Merge support/v4.x into master')
+      expect(expected).toHaveProperty(
+        'commitHeadline',
+        'chore: Merge support/v4.x into master (#1240)',
+      )
     })
 
     it('should return the formatted title with a normal headRefName', () => {
