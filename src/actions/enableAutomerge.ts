@@ -1,4 +1,4 @@
-import {actionsCore as core, actionsGithub as github} from '../lib'
+import {actionsCore, actionsCore as core, actionsGithub as github} from '../lib'
 import {getRepo} from '../repo'
 import {getMergeData} from '../utils'
 
@@ -23,6 +23,9 @@ async function run() {
 
   const prData = await repo.getPullRequest(prNumber)
   const mergeData = getMergeData(prData)
+  actionsCore.info(`merge strategy: ${mergeData.mergeMethod}`)
+  actionsCore.info(`title: ${mergeData.commitHeadline}`)
+  actionsCore.info(`body: ${mergeData.commitBody}`)
   const id = prData.repository?.pullRequest?.id
   if (!id) {
     throw new Error(`Pull request id not found for ${prNumber}`)
