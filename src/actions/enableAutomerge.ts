@@ -1,4 +1,4 @@
-import {actionsCore, actionsCore as core, actionsGithub as github} from '../lib'
+import {actionsCore as core, actionsGithub as github} from '../lib'
 import {getRepo} from '../repo'
 import {getMergeData} from '../utils'
 
@@ -23,9 +23,11 @@ async function run() {
 
   const prData = await repo.getPullRequest(prNumber)
   const mergeData = getMergeData(prData)
-  actionsCore.info(`merge strategy: ${mergeData.mergeMethod}`)
-  actionsCore.info(`title: ${mergeData.commitHeadline}`)
-  actionsCore.info(`body: ${mergeData.commitBody}`)
+
+  core.info(`merge strategy: ${mergeData.mergeMethod}`)
+  core.info(`title: ${mergeData.commitHeadline}`)
+  core.info(`body: ${mergeData.commitBody}`)
+
   const id = prData.repository?.pullRequest?.id
   if (!id) {
     throw new Error(`Pull request id not found for ${prNumber}`)
@@ -36,8 +38,19 @@ async function run() {
     await repo.disableAutoMerge({id})
   }
 
-  await repo.enableAutoMerge({
-    id,
+  try {
+    await repo.enableAutoMerge({
+      id,
+      ...mergeData,
+    })
+  } catch (e) {
+    if (e instanceof Error) {
+      core.info(`Could not enable auto merge. Trying to directly merge.\nMessage: ${e.message}`)
+    }
+  }
+
+  await repo.merge({
+    pullRequestId: id,
     ...mergeData,
   })
 

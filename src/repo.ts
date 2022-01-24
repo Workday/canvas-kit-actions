@@ -8,6 +8,7 @@ import {
   EnablePullRequestAutoMergeVariables,
 } from './__generated__/enable-pull-request-auto-merge'
 import {GetPullRequest} from './__generated__/get-pull-request'
+import {MergePullRequestVariables} from './__generated__/merge-pull-request'
 
 const gql = (strings: TemplateStringsArray): string => strings.raw[0]
 
@@ -99,6 +100,24 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                     login
                   }
                 }
+              }
+            }
+          }
+        `,
+        input,
+      )
+    },
+
+    async merge(input: MergePullRequestVariables['input']) {
+      return octokit.graphql(
+        gql`
+          mutation MergePullRequest($input: MergePullRequestInput!) {
+            mergePullRequest(input: $input) {
+              pullRequest {
+                merged
+                mergedAt
+                state
+                url
               }
             }
           }
