@@ -25,8 +25,8 @@ async function run() {
   const mergeData = getMergeData(prData)
 
   core.info(`merge strategy: ${mergeData.mergeMethod}`)
-  core.info(`title: ${mergeData.commitHeadline}`)
-  core.info(`body: ${mergeData.commitBody}`)
+  core.info(`title:\n${mergeData.commitHeadline}`)
+  core.info(`body:\n${mergeData.commitBody}`)
 
   const id = prData.repository?.pullRequest?.id
   if (!id) {
@@ -54,8 +54,6 @@ async function run() {
     ...mergeData,
   })
 
-  core.info(`title:\n${mergeData.commitHeadline}`)
-  core.info(`body:\n${mergeData.commitBody}`)
   core.setOutput('strategy', mergeData.mergeMethod)
 }
 
