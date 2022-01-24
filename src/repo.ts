@@ -104,7 +104,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
             }
           }
         `,
-        {input},
+        input,
       )
     },
 
@@ -122,7 +122,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
             }
           }
         `,
-        input,
+        {input},
       )
     },
 
