@@ -327,7 +327,25 @@ describe('utils', () => {
       expect(verifyPullRequest(input)).toContain('No Category section provided')
     })
 
-    it('should fail if a feature is included and base branch is not a prerelease branch', () => {
+    it('should fail if a feature is included and base branch is support', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+            title: 'feat(tooltip): Some new Tooltip feature',
+            number: 0,
+            headRefName: '',
+            baseRefName: 'support',
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toContain('The support branch should only contain fixes')
+    })
+
+    it('should fail if a feature is included and base branch is master', () => {
       const input = {
         repository: {
           pullRequest: {
@@ -342,28 +360,10 @@ describe('utils', () => {
         },
       }
 
-      expect(verifyPullRequest(input)).toContain('All features should target a prerelease branch')
+      expect(verifyPullRequest(input)).toContain('The master branch should only contain fixes')
     })
 
-    it('should fail if a feature is included and base branch is not a prerelease branch', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
-            title: 'feat(tooltip): Some new Tooltip feature',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'prerelease/minor',
-            id: '',
-            autoMergeRequest: null,
-          },
-        },
-      }
-
-      expect(verifyPullRequest(input)).toEqual(false)
-    })
-
-    it('should fail if a breaking change is included and base branch is not a prerelease branch', () => {
+    it('should fail if a breaking change is included and base branch is not the prerelease/major branch', () => {
       const input = {
         repository: {
           pullRequest: {
@@ -381,6 +381,42 @@ describe('utils', () => {
       expect(verifyPullRequest(input)).toContain(
         'All breaking changes should target the "prerelease/major" branch',
       )
+    })
+
+    it('should not fail if a feature is included and base branch is prerelease/minor', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+            title: 'feat(tooltip): Some new Tooltip feature',
+            number: 0,
+            headRefName: '',
+            baseRefName: 'prerelease/minor',
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toEqual(false)
+    })
+
+    it('should not fail if a feature is included and base branch is prerelease/major', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+            title: 'feat(tooltip): Some new Tooltip feature',
+            number: 0,
+            headRefName: '',
+            baseRefName: 'prerelease/major',
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should not fail if a breaking change is included and prerelease/major', () => {
