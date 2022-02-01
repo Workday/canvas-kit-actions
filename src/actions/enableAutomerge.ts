@@ -47,12 +47,13 @@ async function run() {
     if (e instanceof Error) {
       core.info(`Could not enable auto merge. Trying to directly merge.\nMessage: ${e.message}`)
     }
-  }
 
-  await repo.merge({
-    pullRequestId: id,
-    ...mergeData,
-  })
+    // Automerge failed. Try a straight merge
+    await repo.merge({
+      pullRequestId: id,
+      ...mergeData,
+    })
+  }
 
   core.setOutput('strategy', mergeData.mergeMethod)
 }
