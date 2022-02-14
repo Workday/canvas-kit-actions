@@ -23,11 +23,23 @@ ${sections['breaking changes'] ? `### BREAKING CHANGES\n${sections['breaking cha
 export function getMergeData(prData: GetPullRequest) {
   const {title, number, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
   const sections = getSections(body || '')
+  let commitBody = ''
+
+  if (headRefName?.startsWith('merge/')) {
+    commitBody = ''
+  } else if (headRefName?.startsWith('dependabot/')) {
+    commitBody = getCommitBody({
+      summary: body?.split('\n')[0] || '',
+      'release category': 'Dependencies',
+    })
+  } else {
+    commitBody = getCommitBody(sections)
+  }
   return {
     commitHeadline: `${
       sections['breaking changes'] ? title?.replace(': ', '!: ') : title
     } (#${number})`,
-    commitBody: headRefName?.startsWith('merge/') ? '' : getCommitBody(sections),
+    commitBody,
     mergeMethod: headRefName?.startsWith('merge/') ? 'MERGE' : ('SQUASH' as 'MERGE' | 'SQUASH'),
   }
 }
@@ -35,7 +47,13 @@ export function getMergeData(prData: GetPullRequest) {
 export function verifyPullRequest(prData: GetPullRequest): false | string {
   const {title, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
 
+  // Merge pull requests
   if (headRefName?.startsWith('merge/')) {
+    return false
+  }
+
+  // Dependabot pull requests
+  if (headRefName?.includes('dependabot/')) {
     return false
   }
 

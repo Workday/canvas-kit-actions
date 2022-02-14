@@ -142,6 +142,41 @@ describe('utils', () => {
         'fix(tooltip)!: Fix OverflowTooltip with SVG icons in IE11 (#1240)',
       )
     })
+
+    it('should create a category of [category:Dependencies] from dependabot PRs', () => {
+      const expected = getMergeData({
+        repository: {
+          pullRequest: {
+            headRefName: 'dependabot/npm_and_yarn/ajv-6.12.6',
+            baseRefName: '',
+            title: 'chore: Bump ajv from 6.12.0 to 6.12.6',
+            body: stripIndent`
+              Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.12.0 to 6.12.6.
+              <details>
+              <summary>Release notes</summary>
+              ...
+            `,
+            number: 1240,
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      })
+
+      expect(expected).toHaveProperty(
+        'commitHeadline',
+        'chore: Bump ajv from 6.12.0 to 6.12.6 (#1240)',
+      )
+
+      expect(expected).toHaveProperty(
+        'commitBody',
+        stripIndent`
+          Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.12.0 to 6.12.6.
+
+          [category:Dependencies]
+        `,
+      )
+    })
   })
 
   describe('getSections', () => {
@@ -463,6 +498,24 @@ describe('utils', () => {
             title: '',
             number: 0,
             headRefName: '',
+            baseRefName: '',
+            id: '',
+            autoMergeRequest: null,
+          },
+        },
+      }
+
+      expect(verifyPullRequest(input)).toEqual(false)
+    })
+
+    it('should not fail on dependabot PRs', () => {
+      const input = {
+        repository: {
+          pullRequest: {
+            body: 'Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.12.0 to 6.12.6.\n<details>\n<summary>Release notes</summary>',
+            title: 'chore: Bump ajv from 6.12.0 to 6.12.6',
+            number: 0,
+            headRefName: 'dependabot/npm_and_yarn/ajv-6.12.6',
             baseRefName: '',
             id: '',
             autoMergeRequest: null,
