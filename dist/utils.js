@@ -24,9 +24,22 @@ function getMergeData(prData) {
     var _a;
     const { title, number, body, headRefName, baseRefName } = ((_a = prData.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) || {};
     const sections = getSections(body || '');
+    let commitBody = '';
+    if (headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('merge/')) {
+        commitBody = '';
+    }
+    else if (headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('dependabot/')) {
+        commitBody = getCommitBody({
+            summary: (body === null || body === void 0 ? void 0 : body.split('\n')[0]) || '',
+            'release category': 'Dependencies',
+        });
+    }
+    else {
+        commitBody = getCommitBody(sections);
+    }
     return {
         commitHeadline: `${sections['breaking changes'] ? title === null || title === void 0 ? void 0 : title.replace(': ', '!: ') : title} (#${number})`,
-        commitBody: (headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('merge/')) ? '' : getCommitBody(sections),
+        commitBody,
         mergeMethod: (headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('merge/')) ? 'MERGE' : 'SQUASH',
     };
 }
@@ -34,7 +47,12 @@ exports.getMergeData = getMergeData;
 function verifyPullRequest(prData) {
     var _a;
     const { title, body, headRefName, baseRefName } = ((_a = prData.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) || {};
+    // Merge pull requests
     if (headRefName === null || headRefName === void 0 ? void 0 : headRefName.startsWith('merge/')) {
+        return false;
+    }
+    // Dependabot pull requests
+    if (headRefName === null || headRefName === void 0 ? void 0 : headRefName.includes('dependabot/')) {
         return false;
     }
     if (!body) {
