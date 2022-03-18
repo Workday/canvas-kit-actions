@@ -51,6 +51,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                 headRefName
                 baseRefName
                 id
+                mergeable
                 autoMergeRequest {
                   commitBody
                   commitHeadline

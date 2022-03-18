@@ -48,11 +48,18 @@ async function run() {
       core.info(`Could not enable auto merge. Trying to directly merge.\nMessage: ${e.message}`)
     }
 
-    // Automerge failed. Try a straight merge
-    await repo.merge({
-      pullRequestId: id,
-      ...mergeData,
-    })
+    if (prData.repository?.pullRequest?.mergeable === 'MERGEABLE') {
+      // Automerge failed. Try a straight merge
+      await repo.merge({
+        pullRequestId: id,
+        ...mergeData,
+      })
+    } else {
+      // PR is not mergeable
+      throw new Error(
+        `Pull request is not mergeable. Github mergeability: ${prData.repository?.pullRequest?.mergeable}`,
+      )
+    }
   }
 
   core.setOutput('strategy', mergeData.mergeMethod)

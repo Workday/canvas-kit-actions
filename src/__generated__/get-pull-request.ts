@@ -9,6 +9,7 @@ export type GetPullRequest = {
             headRefName: string;
             baseRefName: string;
             id: string;
+            mergeable: "CONFLICTING" | "MERGEABLE" | "UNKNOWN";
             autoMergeRequest: ({
                 commitBody: string | null;
                 commitHeadline: string | null;
