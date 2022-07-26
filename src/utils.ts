@@ -149,6 +149,15 @@ export function getSections(input: string): Sections {
       .trim()
   }
 
+  // Catch dependabot PRs and set the correct section
+  if (!sections.summary) {
+    const matches = input.match(/(Bumps.+from.+to.+)/)
+    if (matches) {
+      sections.summary = matches[0]
+      sections['release category'] = 'Dependencies'
+    }
+  }
+
   return sections
 }
 

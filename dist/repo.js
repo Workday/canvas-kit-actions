@@ -31,6 +31,7 @@ function getRepo({ token, owner, repo }) {
                 headRefName
                 baseRefName
                 id
+                mergeable
                 autoMergeRequest {
                   commitBody
                   commitHeadline

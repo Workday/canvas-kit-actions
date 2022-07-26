@@ -129,6 +129,14 @@ function getSections(input) {
             .replace(/[\n]{2,}/g, '\n\n') // assume more than 2 newlines in a row are a mistake, perhaps from removing comments
             .trim();
     }
+    // Catch dependabot PRs and set the correct section
+    if (!sections.summary) {
+        const matches = input.match(/(Bumps.+from.+to.+)/);
+        if (matches) {
+            sections.summary = matches[0];
+            sections['release category'] = 'Dependencies';
+        }
+    }
     return sections;
 }
 exports.getSections = getSections;
