@@ -100,12 +100,11 @@ function isValidHeading(input: string): input is keyof Sections {
 
 export function getSections(input: string): Sections {
   let activeSection: keyof Sections | '' = ''
-  console.log(input)
+
   const sections = input
     .replace(/\r/g, '')
     .split('\n')
     .reduce((result, line) => {
-      console.log(result)
       const headingMatch = line.match(/^#+\s+(.+)/)
       const badgeMatch = line.match(
         /^!\[[a-z]+\]\(https:\/\/img.shields.io\/badge\/([a-z_]+)-([a-z_]+)-[a-z]+\)/i,
