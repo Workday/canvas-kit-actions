@@ -228,6 +228,44 @@ describe('utils', () => {
 
       expect(getSections(input)).toEqual(expected)
     })
+
+    it('should parse dependabot pull requests', () => {
+      const input = stripIndent`
+      Bumps [prismjs](https://github.com/PrismJS/prism) from 1.25.0 to 1.27.0.
+      <details>
+      <summary>Release notes</summary>
+      <p><em>Sourced from <a href="https://github.com/PrismJS/prism/releases">prismjs's releases</a>.</em></p>
+      <blockquote>
+      <h2>v1.27.0</h2>
+      <p>Release 1.27.0</p>
+      <h2>v1.26.0</h2>
+      <p>Release 1.26.0</p>
+      </blockquote>
+      </details>
+
+      [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=prismjs&package-manager=npm_and_yarn&previous-version=1.25.0&new-version=1.27.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+      Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting \`@dependabot rebase\`.
+
+      [//]: # (dependabot-automerge-start)
+      [//]: # (dependabot-automerge-end)
+
+      ---
+
+      <details>
+      <summary>Dependabot commands and options</summary>
+      <br />
+      You can disable automated security fix PRs for this repo from the [Security Alerts page](https://github.com/Workday/canvas-kit/network/alerts).
+      </details>
+      `
+
+      const expected = {
+        summary: 'Bumps [prismjs](https://github.com/PrismJS/prism) from 1.25.0 to 1.27.0.',
+        'release category': 'Dependencies',
+      }
+
+      expect(getSections(input)).toEqual(expected)
+    })
   })
 
   describe('getCommitParts', () => {
