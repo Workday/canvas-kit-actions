@@ -100,11 +100,12 @@ function isValidHeading(input: string): input is keyof Sections {
 
 export function getSections(input: string): Sections {
   let activeSection: keyof Sections | '' = ''
-
+  console.log(input)
   const sections = input
     .replace(/\r/g, '')
     .split('\n')
     .reduce((result, line) => {
+      console.log(result)
       const headingMatch = line.match(/^#+\s+(.+)/)
       const badgeMatch = line.match(
         /^!\[[a-z]+\]\(https:\/\/img.shields.io\/badge\/([a-z_]+)-([a-z_]+)-[a-z]+\)/i,
@@ -147,6 +148,15 @@ export function getSections(input: string): Sections {
       .replace(/<!--[\s\S]+?-->/gm, '') // replace comments non-greedily in multiline mode
       .replace(/[\n]{2,}/g, '\n\n') // assume more than 2 newlines in a row are a mistake, perhaps from removing comments
       .trim()
+  }
+
+  // Catch dependabot PRs and set the correct section
+  if (!sections.summary) {
+    const matches = input.match(/(Bumps.+from.+to.+)/)
+    if (matches) {
+      sections.summary = matches[0]
+      sections['release category'] = 'Dependencies'
+    }
   }
 
   return sections
