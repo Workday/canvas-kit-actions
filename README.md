@@ -1,13 +1,13 @@
-
 ## Canvas Kit Actions
 
 This repository contains custom Github Actions that aid in the release process of https://github.com/Workday/canvas-kit. This is a monorepo of multiple actions.
 
 ### `verify-pull-request`
 
-This action runs the followinging checks:
+This action runs the following checks:
+
 - **Ensure the base/target branch is correct.**
-  Canvas Kit release patch versions on every commit, but minor and major releases on a cadence. In order to suppor this workflow, prerelease branches are used. If a pull request contains a feature, it must target a prerelease branch. Breaking changes also should only go into prerelease branches
+  Canvas Kit release patch versions on every commit, but minor and major releases on a cadence. In order to support this workflow, prerelease branches are used. If a pull request contains a feature, it must target a prerelease branch. Breaking changes also should only go into prerelease branches
 - **Ensure a Summary section is present**
   A Summary is used for the extended commit message and should contain `Fixes` or `Resovles` pointing to an issue number and a short description of the motivation of a pull request.
 
