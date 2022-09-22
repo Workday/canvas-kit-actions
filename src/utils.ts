@@ -2,7 +2,34 @@ import {paths} from '@octokit/openapi-types'
 import {GetPullRequest} from './__generated__/get-pull-request'
 
 /**
- * Creates a commit message out of Sections. This commit message will be processed later for changelog and release note
+ * Creates a commit message out of Sections. This commit message will be processed later for
+ * changelog and release note.
+ *
+ * For example:
+ * Input:
+ * ```ts
+ * {
+ *   summary: 'My summary',
+ *   'release category': 'Components',
+ *   'release note': 'My release notes',
+ *   'breaking changes': 'Some breaking changes'
+ * }
+ * ```
+ *
+ * Output:
+ * ```ts
+ * `
+ * My summary
+ *
+ * [category:Components]
+ *
+ * Release Note:
+ * My release notes
+ *
+ * ### BREAKING CHANGES
+ * Some breaking changes
+ * `
+ * ```
  */
 export function getCommitBody(sections: Sections) {
   return `${sections.summary || ''}
@@ -54,7 +81,11 @@ export function mergeAuthors(authors: Author[]): Author[] {
 }
 
 /**
- * Determine auto merge data from a PR
+ * Determine auto merge data from a PR. This will choose the merge method, commit headline,  and
+ * commit body. The commit body will encode PR sections like Summary, Release Notes, Breaking
+ * Changes, and co-authors.
+ *
+ * @param prData data from GraphQL API call. Contains PR number, commits, etc
  */
 export function getMergeData(prData: GetPullRequest) {
   const {title, number, body, headRefName, baseRefName, author} =
@@ -106,6 +137,10 @@ export function getMergeData(prData: GetPullRequest) {
   }
 }
 
+/**
+ * Verify a pull request has all the valid info. The validation ensures commit messages are correct
+ * for automated release note generation.
+ */
 export function verifyPullRequest(prData: GetPullRequest): false | string {
   const {title, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
 
@@ -160,6 +195,10 @@ function isValidHeading(input: string): input is keyof Sections {
   return ['summary', 'release note', 'release category', 'breaking changes'].includes(input)
 }
 
+/**
+ * Parse a PR body and return all the related sections. Used for verification and commit message
+ * encoding.
+ */
 export function getSections(input: string): Sections {
   let activeSection: keyof Sections | '' = ''
 
@@ -232,6 +271,9 @@ interface CommitParts {
   additionalAuthors?: string[]
 }
 
+/**
+ * Parse a commit message and extract important information. Used for release note generation.
+ */
 export function getCommitParts(input: string): CommitParts {
   const lines = input.replace(/\r/g, '').split('\n')
   const firstLine = lines[0].trim()
