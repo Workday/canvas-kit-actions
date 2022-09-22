@@ -19,6 +19,24 @@ ${sections['breaking changes'] ? `### BREAKING CHANGES\n${sections['breaking cha
 
 type Author = {name: string; login: string | null; email: string}
 
+/**
+ * Merges a list of authors together, prioritizing login. Sometimes people commit without an
+ * associated login. For example, if someone commits with an email that isn't associated with a
+ * GitHub account, and another commit will be. The merging algorithm uses a name as a unique key.
+ * This has the unfortunate issue where 2 contributors with the same name will be treated as single
+ * contributor. This case is less likely than the case where the same person has multiple commits
+ * with different emails or login. Treating a name as unique prevents a person from being listed
+ * twice in these cases. See `fixtures/getPullRequestMultipleAuthors.json` for a real example.
+ *
+ * Input: [
+ *   {name: 'John Doe', email: 'john.doe@some-email.com', login: null},
+ *   {name: 'John Doe', email: 'john.doe@example.com', login: 'JohnDoe'}
+ * ]
+ *
+ * Output: [
+ *   {name: 'John Doe', email: 'john.doe@example.com', login: 'JohnDoe'}
+ * ]
+ */
 export function mergeAuthors(authors: Author[]): Author[] {
   return authors.reduce((result, author) => {
     const existingAuthor = result.find(a => a.name === author.name)
@@ -330,6 +348,11 @@ export function getReleaseTitle(owner: string, repo: string, tagName: string) {
 type Commits =
   paths['/repos/{owner}/{repo}/compare/{basehead}']['get']['responses']['200']['content']['application/json']['commits']
 
+/**
+ * Get release notes from a series of commit objects that come from the Github API. It will parse
+ * each commit message, extracting useful info like breaking changes, co-authors, and additional
+ * release notes.
+ */
 export function getReleaseNotes(
   owner: string,
   repo: string,
@@ -357,7 +380,9 @@ export function getReleaseNotes(
       owner,
       repo,
       commit.author?.login || '',
-      // filter additional authors that include the PR's author login
+      // filter additional authors that include the PR's author login For example, if a commit has a
+      // `Co-authored-by` that contains the original PR's author, we filter it out. Without this,
+      // you'll get contributions that look like `(@alanbsmith, @alanbsmith)`
       commitParts['additionalAuthors']?.filter(
         a => a.replace('@', '') !== commit.author?.login || '',
       ),
