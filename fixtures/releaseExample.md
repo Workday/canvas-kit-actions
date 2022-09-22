@@ -19,15 +19,15 @@
 - fix(side-panel): Fix SidePanel RTL support ([#1234](https://github.com/Workday/canvas-kit/pull/1234)) ([@alanbsmith](https://github.com/alanbsmith))
 - chore(table): Update polished package to fix security warning ([#1242](https://github.com/Workday/canvas-kit/pull/1242)) ([@NicholasBoll](https://github.com/NicholasBoll))
 - fix: Update search bar to properly render rtl ([#1231](https://github.com/Workday/canvas-kit/pull/1231)) ([@JaredWF](https://github.com/JaredWF))
-- feat(icon): Add shouldMirror prop to icons ([#1246](https://github.com/Workday/canvas-kit/pull/1246)) ([@alanbsmith](https://github.com/alanbsmith))
+- feat(icon): Add shouldMirror prop to icons ([#1246](https://github.com/Workday/canvas-kit/pull/1246)) ([@alanbsmith](https://github.com/alanbsmith), [@stefanuros](https://github.com/stefanuros))
 - fix(tooltip): Fix tooltip placement overlap on keyboard focus ([#1248](https://github.com/Workday/canvas-kit/pull/1248)) ([@NicholasBoll](https://github.com/NicholasBoll))
-- fix: Add to Box omitted props list ([#1256](https://github.com/Workday/canvas-kit/pull/1256)) ([@alanbsmith](https://github.com/alanbsmith))
+- fix: Add to Box omitted props list ([#1256](https://github.com/Workday/canvas-kit/pull/1256)) ([@alanbsmith](https://github.com/alanbsmith), [@anicholls](https://github.com/anicholls))
 - fix(tooltip): Update OverflowTooltip to support non-elements ([#1260](https://github.com/Workday/canvas-kit/pull/1260)) ([@NicholasBoll](https://github.com/NicholasBoll))
 - fix(tooltip): Fix OverflowTooltip with SVG in IE11 ([#1263](https://github.com/Workday/canvas-kit/pull/1263)) ([@NicholasBoll](https://github.com/NicholasBoll))
 
 ### Documentation
 
-- docs: Update inter-linking to match Canvas Site ([#1220](https://github.com/Workday/canvas-kit/pull/1220)) ([@NicholasBoll](https://github.com/NicholasBoll))
+- docs: Update inter-linking to match Canvas Site ([#1220](https://github.com/Workday/canvas-kit/pull/1220)) ([@NicholasBoll](https://github.com/NicholasBoll), [@jamesfan](https://github.com/jamesfan), [@anicholls](https://github.com/anicholls))
 - docs: Update various issues prevent docs mdx files from being rendered remotely ([#1238](https://github.com/Workday/canvas-kit/pull/1238)) ([@anicholls](https://github.com/anicholls))
 - docs: Update SidePanel docs to MDX ([#1236](https://github.com/Workday/canvas-kit/pull/1236)) ([@alanbsmith](https://github.com/alanbsmith))
 - docs: Improved Variant/Type/State docs ([#1243](https://github.com/Workday/canvas-kit/pull/1243)) ([@anicholls](https://github.com/anicholls))

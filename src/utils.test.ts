@@ -5,14 +5,47 @@ import {
   getMergeData,
   getReleaseTitle,
   getSections,
+  mergeAuthors,
   verifyPullRequest,
 } from './utils'
 import {stripIndent} from 'common-tags'
 import fs from 'fs'
 import path from 'path'
 import {promisify} from 'util'
+import {GetPullRequest} from './__generated__/get-pull-request'
 
 const readFile = promisify(fs.readFile)
+
+function createTestPullRequest(input: {
+  pullRequest: Partial<NonNullable<GetPullRequest['repository']>['pullRequest']>
+}): GetPullRequest {
+  return {
+    repository: {
+      pullRequest: {
+        id: '',
+        baseRefName: '',
+        headRefName: '',
+        body: '',
+        number: 1,
+        mergeable: 'MERGEABLE',
+        title: '',
+        autoMergeRequest: {
+          commitBody: '',
+          commitHeadline: '',
+          enabledAt: '',
+        },
+        author: {
+          login: '',
+        },
+        commits: {
+          totalCount: 0,
+          nodes: null,
+        },
+        ...input?.pullRequest,
+      },
+    },
+  }
+}
 
 describe('utils', () => {
   describe('getCommitBody', () => {
@@ -40,10 +73,61 @@ describe('utils', () => {
     })
   })
 
+  describe('mergeAuthors', () => {
+    it('should merge authors by name', () => {
+      const actual = mergeAuthors([
+        {
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+          login: null,
+        },
+        {
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+          login: null,
+        },
+        {
+          name: 'Jane Doe',
+          email: 'jane.doe@example.com',
+          login: null,
+        },
+      ])
+
+      const expected = [
+        {name: 'John Doe', email: 'john.doe@example.com', login: null},
+        {name: 'Jane Doe', email: 'jane.doe@example.com', login: null},
+      ]
+
+      expect(actual).toEqual(expected)
+    })
+
+    it('should merge authors by name preferring defined login fields', () => {
+      const actual = mergeAuthors([
+        {
+          name: 'John Doe',
+          email: 'john.doe1@example.com',
+          login: null,
+        },
+        {
+          name: 'John Doe',
+          email: 'john.doe2@example.com',
+          login: 'JohnDoe',
+        }
+      ])
+
+      const expected = [
+        {name: 'John Doe', email: 'john.doe2@example.com', login: 'JohnDoe'},
+      ]
+
+      expect(actual).toEqual(expected)
+    })
+  })
+})
+
   describe('getMergeData', () => {
     it('should return a merge strategy with a merge headRefName', () => {
-      const expected = getMergeData({
-        repository: {
+      const expected = getMergeData(
+        createTestPullRequest({
           pullRequest: {
             headRefName: 'merge/support/v4-into-master',
             baseRefName: '',
@@ -51,18 +135,18 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
-            mergeable: 'MERGEABLE' as const,
+            mergeable: 'MERGEABLE',
             autoMergeRequest: null,
           },
-        },
-      })
+        }),
+      )
 
       expect(expected).toHaveProperty('mergeMethod', 'MERGE')
     })
 
     it('should return a squash strategy with a normal headRefName', () => {
-      const expected = getMergeData({
-        repository: {
+      const expected = getMergeData(
+        createTestPullRequest({
           pullRequest: {
             headRefName: 'feat/add-rtl',
             baseRefName: '',
@@ -70,18 +154,18 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
-            mergeable: 'MERGEABLE' as const,
+            mergeable: 'MERGEABLE',
             autoMergeRequest: null,
           },
-        },
-      })
+        }),
+      )
 
       expect(expected).toHaveProperty('mergeMethod', 'SQUASH')
     })
 
     it('should return the title with a merge headRefName', () => {
-      const expected = getMergeData({
-        repository: {
+      const expected = getMergeData(
+        createTestPullRequest({
           pullRequest: {
             headRefName: 'merge/support/v4-into-master',
             baseRefName: '',
@@ -89,11 +173,11 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
-            mergeable: 'MERGEABLE' as const,
+            mergeable: 'MERGEABLE',
             autoMergeRequest: null,
           },
-        },
-      })
+        }),
+      )
 
       expect(expected).toHaveProperty(
         'commitHeadline',
@@ -102,8 +186,8 @@ describe('utils', () => {
     })
 
     it('should return the formatted title with a normal headRefName', () => {
-      const expected = getMergeData({
-        repository: {
+      const expected = getMergeData(
+        createTestPullRequest({
           pullRequest: {
             headRefName: 'chore/fix-overflow-tooltips',
             baseRefName: '',
@@ -111,11 +195,11 @@ describe('utils', () => {
             body: '',
             number: 1240,
             id: '',
-            mergeable: 'MERGEABLE' as const,
+            mergeable: 'MERGEABLE',
             autoMergeRequest: null,
           },
-        },
-      })
+        }),
+      )
 
       expect(expected).toHaveProperty(
         'commitHeadline',
@@ -124,8 +208,8 @@ describe('utils', () => {
     })
 
     it('should add the breaking indicator to the title for breaking changes', () => {
-      const expected = getMergeData({
-        repository: {
+      const expected = getMergeData(
+        createTestPullRequest({
           pullRequest: {
             headRefName: 'chore/fix-overflow-tooltips',
             baseRefName: '',
@@ -136,11 +220,11 @@ describe('utils', () => {
             `,
             number: 1240,
             id: '',
-            mergeable: 'MERGEABLE' as const,
+            mergeable: 'MERGEABLE',
             autoMergeRequest: null,
           },
-        },
-      })
+        }),
+      )
 
       expect(expected).toHaveProperty(
         'commitHeadline',
@@ -149,8 +233,8 @@ describe('utils', () => {
     })
 
     it('should create a category of [category:Dependencies] from dependabot PRs', () => {
-      const expected = getMergeData({
-        repository: {
+      const expected = getMergeData(
+        createTestPullRequest({
           pullRequest: {
             headRefName: 'dependabot/npm_and_yarn/ajv-6.12.6',
             baseRefName: '',
@@ -163,11 +247,11 @@ describe('utils', () => {
             `,
             number: 1240,
             id: '',
-            mergeable: 'MERGEABLE' as const,
+            mergeable: 'MERGEABLE',
             autoMergeRequest: null,
           },
-        },
-      })
+        }),
+      )
 
       expect(expected).toHaveProperty(
         'commitHeadline',
@@ -180,6 +264,92 @@ describe('utils', () => {
           Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.12.0 to 6.12.6.
 
           [category:Dependencies]
+        `,
+      )
+    })
+
+    it('should add co-authors if more than author is detected', () => {
+      const expected = getMergeData(
+        createTestPullRequest({
+          pullRequest: {
+            headRefName: 'feat/add-something',
+            baseRefName: 'master',
+            title: 'feat: Add new component',
+            body: stripIndent`
+              ## Summary
+              Add a new Component
+
+              ## Release Category
+              Components
+            `,
+            number: 1240,
+            id: '',
+            author: {
+              login: 'janesmith',
+            },
+            commits: {
+              totalCount: 2,
+              nodes: [
+                {
+                  commit: {
+                    additions: 1,
+                    deletions: 1,
+                    message: 'Fix a typo',
+                    authoredByCommitter: true,
+                    authors: {
+                      nodes: [
+                        {
+                          name: 'John Doe',
+                          email: 'john.doe@example.com',
+                          user: null,
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  commit: {
+                    additions: 1,
+                    deletions: 1,
+                    message: 'Fix a typo',
+                    authoredByCommitter: true,
+                    authors: {
+                      nodes: [
+                        {
+                          name: 'John Doe',
+                          email: 'john.doe@example.com',
+                          user: {
+                            login: 'JohnDoe',
+                          },
+                        },
+                        {
+                          name: 'Jane Doe',
+                          email: 'jane.doe@example.com',
+                          user: {
+                            login: 'JaneDoe',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+            mergeable: 'MERGEABLE',
+            autoMergeRequest: null,
+          },
+        }),
+      )
+
+      expect(expected).toHaveProperty(
+        'commitBody',
+        stripIndent`
+          Add a new Component
+
+          [category:Components]
+
+          Co-authored-by: @JohnDoe <john.doe@example.com>
+          Co-authored-by: @JaneDoe <jane.doe@example.com>
         `,
       )
     })
@@ -289,6 +459,9 @@ describe('utils', () => {
 
       ### BREAKING CHANGES
       Some breaking changes
+
+      Co-authored-by: @JohnDoe <john.doe@example.com>
+      Co-authored-by: Jane Doe <jane.doe@example.com>
       `
 
       const expected = {
@@ -297,6 +470,7 @@ describe('utils', () => {
         category: 'Components',
         'release note': 'My release notes',
         'breaking change': 'Some breaking changes',
+        additionalAuthors: ['@JohnDoe', 'Jane Doe']
       }
 
       expect(getCommitParts(input)).toEqual(expected)
@@ -335,134 +509,123 @@ describe('utils', () => {
 
   describe('verifyPullRequest', () => {
     it('should pass when headRef is a merge', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: '',
-            title: '',
-            number: 0,
-            headRefName: 'merge/support-into-master',
-            baseRefName: '',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: '',
+          title: '',
+          author: {
+            login: '',
           },
+          number: 0,
+          headRefName: 'merge/support-into-master',
+          baseRefName: '',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should fail when there is no PR body', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: '',
-            title: '',
-            number: 0,
-            headRefName: '',
-            baseRefName: '',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: '',
+          title: '',
+          number: 0,
+          headRefName: '',
+          baseRefName: '',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain('No pull request body found')
     })
 
     it('should fail when there is no Summary section', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content',
-            title: '',
-            number: 0,
-            headRefName: '',
-            baseRefName: '',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content',
+          title: '',
+          number: 0,
+          headRefName: '',
+          baseRefName: '',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain('No Summary section provided')
     })
 
     it('should fail when there is no Category section', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary',
-            title: '',
-            number: 0,
-            headRefName: '',
-            baseRefName: '',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary',
+          title: '',
+          number: 0,
+          headRefName: '',
+          baseRefName: '',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain('No Category section provided')
     })
 
     it('should fail if a feature is included and base branch is support', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
-            title: 'feat(tooltip): Some new Tooltip feature',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'support',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+          title: 'feat(tooltip): Some new Tooltip feature',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'support',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain('The support branch should only contain fixes')
     })
 
     it('should fail if a feature is included and base branch is master', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
-            title: 'feat(tooltip): Some new Tooltip feature',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'master',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+          title: 'feat(tooltip): Some new Tooltip feature',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'master',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain('The master branch should only contain fixes')
     })
 
     it('should fail if a breaking change is included and base branch is not the prerelease/major branch', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
-            title: 'fix(tooltip): Some breaking tooltip fix',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'master',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
+          title: 'fix(tooltip): Some breaking tooltip fix',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'master',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain(
         'All breaking changes should target the "prerelease/major" branch',
@@ -470,115 +633,103 @@ describe('utils', () => {
     })
 
     it('should not fail if a feature is included and base branch is prerelease/minor', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
-            title: 'feat(tooltip): Some new Tooltip feature',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'prerelease/minor',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+          title: 'feat(tooltip): Some new Tooltip feature',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'prerelease/minor',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should not fail if a feature is included and base branch is prerelease/major', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
-            title: 'feat(tooltip): Some new Tooltip feature',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'prerelease/major',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+          title: 'feat(tooltip): Some new Tooltip feature',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'prerelease/major',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should not fail if a breaking change is included and prerelease/major', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
-            title: 'fix(tooltip): Some breaking tooltip fix',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'prerelease/major',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
+          title: 'fix(tooltip): Some breaking tooltip fix',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'prerelease/major',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should fail if [skip ci] is detected in the PR title', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
-            title: 'fix(tooltip): Some breaking tooltip fix [skip ci]',
-            number: 0,
-            headRefName: '',
-            baseRefName: 'prerelease/minor',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents\n## BREAKING CHANGES\nSome breaking change',
+          title: 'fix(tooltip): Some breaking tooltip fix [skip ci]',
+          number: 0,
+          headRefName: '',
+          baseRefName: 'prerelease/minor',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toContain('Do not use [skip ci]')
     })
 
     it('should not fail when all requirements are met', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
-            title: '',
-            number: 0,
-            headRefName: '',
-            baseRefName: '',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Some body content\n## Summary\nSome summary\n## Release Category\nComponents',
+          title: '',
+          number: 0,
+          headRefName: '',
+          baseRefName: '',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toEqual(false)
     })
 
     it('should not fail on dependabot PRs', () => {
-      const input = {
-        repository: {
-          pullRequest: {
-            body: 'Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.12.0 to 6.12.6.\n<details>\n<summary>Release notes</summary>',
-            title: 'chore: Bump ajv from 6.12.0 to 6.12.6',
-            number: 0,
-            headRefName: 'dependabot/npm_and_yarn/ajv-6.12.6',
-            baseRefName: '',
-            id: '',
-            mergeable: 'MERGEABLE' as const,
-            autoMergeRequest: null,
-          },
+      const input: GetPullRequest = createTestPullRequest({
+        pullRequest: {
+          body: 'Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.12.0 to 6.12.6.\n<details>\n<summary>Release notes</summary>',
+          title: 'chore: Bump ajv from 6.12.0 to 6.12.6',
+          number: 0,
+          headRefName: 'dependabot/npm_and_yarn/ajv-6.12.6',
+          baseRefName: '',
+          id: '',
+          mergeable: 'MERGEABLE',
+          autoMergeRequest: null,
         },
-      }
+      })
 
       expect(verifyPullRequest(input)).toEqual(false)
     })

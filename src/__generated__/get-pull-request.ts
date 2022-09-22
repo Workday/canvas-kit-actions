@@ -10,6 +10,29 @@ export type GetPullRequest = {
             baseRefName: string;
             id: string;
             mergeable: "CONFLICTING" | "MERGEABLE" | "UNKNOWN";
+            author: ({
+                login: string;
+            }) | null;
+            commits: {
+                totalCount: number;
+                nodes: (({
+                    commit: {
+                        additions: number;
+                        deletions: number;
+                        message: string;
+                        authoredByCommitter: boolean;
+                        authors: {
+                            nodes: (({
+                                name: string | null;
+                                email: string | null;
+                                user: ({
+                                    login: string;
+                                }) | null;
+                            }) | null)[] | null;
+                        };
+                    };
+                }) | null)[] | null;
+            };
             autoMergeRequest: ({
                 commitBody: string | null;
                 commitHeadline: string | null;
