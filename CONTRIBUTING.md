@@ -39,7 +39,25 @@ The `runs` block contains the `main` block which points to the source file. To f
 
 All actions import from `repo` and `utils`:
 
-- `repo`: Contains all side-effect API calls to the GitHub API or the file system. All API responses are strongly typed using GitHub's rest API or GraphQL and using https://github.com/Quramy/ts-graphql-plugin to generate Typescript types from a GraphQL query. There are no tests for these functions as they only return API calls. Some of the more complex API responses are stored as fixture data in the `fixtures` directory. These fixture JSON files help to understand the returned API calls as well as are used in some tests.
+- `repo`: Contains all side-effect API calls to the GitHub API or the file system. All API responses are strongly typed using GitHub's rest API or GraphQL and using https://github.com/Quramy/ts-graphql-plugin to generate Typescript types from a GraphQL query. There are no tests for these functions as they only return API calls. Some of the more complex API responses are stored as fixture data in the `fixtures` directory. These fixture JSON files help to understand the returned API calls as well as are used in some tests. If you make changes to this file, run `yarn ts-graphql-plugin typegen` to regenerate Typescript types from the GraphQL schema.
 - `utils`: Contains only pure functions to manipulate data or responses from API calls. All functions here are unit tested. Most fixes and code changes can be made here with 100% confidence that the CI will still work. The unit tests also help to understand data flow.
 
 The combination of strong types and unit testing ensures a high degree of confidence in changes without having to test changes via CI runs triggered by real GitHub events in the http://github.com/Workday/canvas-kit repository.
+
+## Contributing
+
+The best thing to do is to create a test in `src/utils.test.ts` to verify the change you'd like
+to make. Create a function in `src/utils.ts` that manipulates the data the way you want. If you
+need to also create or modify API calls, only do this from the `src/repo.ts` file. You can use the [GitHub GraphQL explorer](https://docs.github.com/en/graphql/overview/explorer) to make GraphQL requests to get the data you want.
+
+If you want to create a new action, create a new folder in the root AND in the `src/actions`.
+For example, if we wanted to create a new action called `verify-issue`, create the following files:
+
+- `verify-issue/action.yml` - entry point
+- `src/actions/verifyIssue.ts` - The `action.yml` file points here
+
+See other actions for the contents of these files.
+
+## Extensions
+
+The `src/repo.ts` file uses GraphQL calls using the `gql` tagged template literal function. To get syntax highlighting and code completions, install the Apollo GraphQL plugin for VSCode. It should pick up the `apollo.config.js` file which points to the GitHub GraphQL schema.
