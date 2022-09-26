@@ -2,7 +2,34 @@ import {paths} from '@octokit/openapi-types'
 import {GetPullRequest} from './__generated__/get-pull-request'
 
 /**
- * Creates a commit message out of Sections. This commit message will be processed later for changelog and release note
+ * Creates a commit message out of Sections. This commit message will be processed later for
+ * changelog and release note.
+ *
+ * For example:
+ * Input:
+ * ```ts
+ * {
+ *   summary: 'My summary',
+ *   'release category': 'Components',
+ *   'release note': 'My release notes',
+ *   'breaking changes': 'Some breaking changes'
+ * }
+ * ```
+ *
+ * Output:
+ * ```ts
+ * `
+ * My summary
+ *
+ * [category:Components]
+ *
+ * Release Note:
+ * My release notes
+ *
+ * ### BREAKING CHANGES
+ * Some breaking changes
+ * `
+ * ```
  */
 export function getCommitBody(sections: Sections) {
   return `${sections.summary || ''}
@@ -17,13 +44,72 @@ ${sections['breaking changes'] ? `### BREAKING CHANGES\n${sections['breaking cha
     .trim()
 }
 
+type Author = {name: string; login: string | null; email: string}
+
 /**
- * Determine auto merge data from a PR
+ * Merges a list of authors together, prioritizing login. Sometimes people commit without an
+ * associated login. For example, if someone commits with an email that isn't associated with a
+ * GitHub account, and another commit will be. The merging algorithm uses a name as a unique key.
+ * This has the unfortunate issue where 2 contributors with the same name will be treated as single
+ * contributor. This case is less likely than the case where the same person has multiple commits
+ * with different emails or login. Treating a name as unique prevents a person from being listed
+ * twice in these cases. See `fixtures/getPullRequestMultipleAuthors.json` for a real example.
+ *
+ * Input: [
+ *   {name: 'John Doe', email: 'john.doe@some-email.com', login: null},
+ *   {name: 'John Doe', email: 'john.doe@example.com', login: 'JohnDoe'}
+ * ]
+ *
+ * Output: [
+ *   {name: 'John Doe', email: 'john.doe@example.com', login: 'JohnDoe'}
+ * ]
+ */
+export function mergeAuthors(authors: Author[]): Author[] {
+  return authors.reduce((result, author) => {
+    const existingAuthor = result.find(a => a.name === author.name)
+    if (existingAuthor) {
+      // prefer defined logins. This can happen if someone has a Github login, but didn't associate the email in the commit with their login
+      if (!existingAuthor.login && author.login) {
+        existingAuthor.login = author.login
+        existingAuthor.email = author.email
+      }
+    } else {
+      result.push(author)
+    }
+    return result
+  }, [] as Author[])
+}
+
+/**
+ * Determine auto merge data from a PR. This will choose the merge method, commit headline,  and
+ * commit body. The commit body will encode PR sections like Summary, Release Notes, Breaking
+ * Changes, and co-authors.
+ *
+ * @param prData data from GraphQL API call. Contains PR number, commits, etc
  */
 export function getMergeData(prData: GetPullRequest) {
-  const {title, number, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
+  const {title, number, body, headRefName, baseRefName, author} =
+    prData.repository?.pullRequest || {}
   const sections = getSections(body || '')
   let commitBody = ''
+
+  // Create an array of all authors listed in commits. It will look like:
+  // [ {login: null, name: "John Doe", email: "john.doe@example.com"} ]
+  const additionalAuthors = (prData.repository?.pullRequest?.commits.nodes || [])
+    .flatMap(
+      node =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        node?.commit.authors.nodes?.map(n => ({
+          name: n?.name || '',
+          email: n?.email || '',
+          login: n?.user?.login || null,
+        }))!,
+    )
+    .filter(v => !!v) // filter out empty results
+
+  // Collect authors into an object keyed by name, merging them and using a `login` if it exists per name
+  // While it is possible for 2 people to have the same
+  const authors = mergeAuthors(additionalAuthors).filter(a => a.login !== author?.login)
 
   if (headRefName?.startsWith('merge/')) {
     commitBody = ''
@@ -35,6 +121,13 @@ export function getMergeData(prData: GetPullRequest) {
   } else {
     commitBody = getCommitBody(sections)
   }
+
+  if (authors.length) {
+    commitBody += `\n\n${authors
+      .map(a => (a ? `Co-authored-by: ${a.login ? `@${a.login}` : a.name} <${a.email}>` : ''))
+      .join('\n')}`
+  }
+
   return {
     commitHeadline: `${
       sections['breaking changes'] ? title?.replace(': ', '!: ') : title
@@ -44,6 +137,10 @@ export function getMergeData(prData: GetPullRequest) {
   }
 }
 
+/**
+ * Verify a pull request has all the valid info. The validation ensures commit messages are correct
+ * for automated release note generation.
+ */
 export function verifyPullRequest(prData: GetPullRequest): false | string {
   const {title, body, headRefName, baseRefName} = prData.repository?.pullRequest || {}
 
@@ -98,6 +195,10 @@ function isValidHeading(input: string): input is keyof Sections {
   return ['summary', 'release note', 'release category', 'breaking changes'].includes(input)
 }
 
+/**
+ * Parse a PR body and return all the related sections. Used for verification and commit message
+ * encoding.
+ */
 export function getSections(input: string): Sections {
   let activeSection: keyof Sections | '' = ''
 
@@ -167,8 +268,12 @@ interface CommitParts {
   category: string
   'release note': string
   'breaking change': string
+  additionalAuthors?: string[]
 }
 
+/**
+ * Parse a commit message and extract important information. Used for release note generation.
+ */
 export function getCommitParts(input: string): CommitParts {
   const lines = input.replace(/\r/g, '').split('\n')
   const firstLine = lines[0].trim()
@@ -198,6 +303,8 @@ export function getCommitParts(input: string): CommitParts {
     }
   }
 
+  const additionalAuthors = [] as string[]
+
   // capture notes and breaking changes
   let activeSection: '' | keyof Pick<CommitParts, 'release note' | 'breaking change'> = ''
   const sections = lines.reduce((result, line) => {
@@ -207,6 +314,11 @@ export function getCommitParts(input: string): CommitParts {
     } else if (line.startsWith('### BREAKING CHANGE')) {
       activeSection = 'breaking change'
       result[activeSection] = ''
+    } else if (line.startsWith('Co-authored-by')) {
+      const matches = /Co-authored-by:\s(.+)\s<.+>/.exec(line)
+      if (matches) {
+        additionalAuthors.push(matches[1])
+      }
     } else {
       if (activeSection) {
         result[activeSection] += `\n${line}`
@@ -214,17 +326,30 @@ export function getCommitParts(input: string): CommitParts {
     }
 
     return result
-  }, {} as Pick<CommitParts, 'release note' | 'breaking change'>)
+  }, {} as Pick<CommitParts, 'release note' | 'breaking change' | 'additionalAuthors'>)
 
+  type myKeys = keyof CommitParts
   // trim sections and remove comments
   for (const [key, value] of Object.entries(sections)) {
-    sections[key as keyof Pick<CommitParts, 'release note' | 'breaking change'>] = value
-      .replace(/<!--[\s\S]+?-->/gm, '') // replace comments non-greedily in multiline mode
-      .replace(/[\n]{2,}/g, '\n\n') // assume more than 2 newlines in a row are a mistake, perhaps from removing comments
-      .trim()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(sections as any)[key] =
+      typeof value === 'string'
+        ? value
+            .replace(/<!--[\s\S]+?-->/gm, '') // replace comments non-greedily in multiline mode
+            .replace(/[\n]{2,}/g, '\n\n') // assume more than 2 newlines in a row are a mistake, perhaps from removing comments
+            .trim()
+        : value
+  }
+
+  if (additionalAuthors.length) {
+    sections['additionalAuthors'] = additionalAuthors
   }
 
   return {title: title.replace('!: ', ': '), pull_request, category, ...sections}
+}
+
+function getLoginLink(login: string, baseUrl: string) {
+  return `[@${login}](${baseUrl}/${login})`
 }
 
 export function getReleaseCommitTitle(
@@ -232,13 +357,22 @@ export function getReleaseCommitTitle(
   owner: string,
   repo: string,
   login: string,
+  additionalAuthors?: string[],
 ) {
   const baseUrl = 'https://github.com'
-  // - fix: Add crossorigin to font preloads [#967](https://github.com/Workday/canvas-kit/pull/967) [@NicholasBoll](https://github.com/NicholasBoll)
+  const authors = [getLoginLink(login, baseUrl)]
+  if (additionalAuthors) {
+    authors.push(
+      ...additionalAuthors.map(a =>
+        a.startsWith('@') ? getLoginLink(a.replace('@', ''), baseUrl) : a,
+      ),
+    )
+  }
+  // - fix: Add cross-origin to font preloads [#967](https://github.com/Workday/canvas-kit/pull/967) [@NicholasBoll](https://github.com/NicholasBoll)
   // remove `[skip ci]` and `[skip release]` from commit message in the notes
   return `${input.title.replace(' [skip ci]', '').replace(' [skip release]', '')}${
     input.pull_request ? ` (${getPRLink(owner, repo, input.pull_request)})` : ''
-  } ([@${login}](${baseUrl}/${login}))`
+  } (${authors.join(', ')})`
 }
 
 function getPRLink(owner: string, repo: string, pull_request: string) {
@@ -256,6 +390,11 @@ export function getReleaseTitle(owner: string, repo: string, tagName: string) {
 type Commits =
   paths['/repos/{owner}/{repo}/compare/{basehead}']['get']['responses']['200']['content']['application/json']['commits']
 
+/**
+ * Get release notes from a series of commit objects that come from the Github API. It will parse
+ * each commit message, extracting useful info like breaking changes, co-authors, and additional
+ * release notes.
+ */
 export function getReleaseNotes(
   owner: string,
   repo: string,
@@ -278,7 +417,18 @@ export function getReleaseNotes(
     ) {
       return
     }
-    let title = getReleaseCommitTitle(commitParts, owner, repo, commit.author?.login || '')
+    let title = getReleaseCommitTitle(
+      commitParts,
+      owner,
+      repo,
+      commit.author?.login || '',
+      // filter additional authors that include the PR's author login For example, if a commit has a
+      // `Co-authored-by` that contains the original PR's author, we filter it out. Without this,
+      // you'll get contributions that look like `(@alanbsmith, @alanbsmith)`
+      commitParts['additionalAuthors']?.filter(
+        a => a.replace('@', '') !== commit.author?.login || '',
+      ),
+    )
     if (commitParts['release note']) {
       title += `\n${commitParts['release note']
         .split('\n')
