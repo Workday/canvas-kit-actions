@@ -112,17 +112,14 @@ describe('utils', () => {
           name: 'John Doe',
           email: 'john.doe2@example.com',
           login: 'JohnDoe',
-        }
+        },
       ])
 
-      const expected = [
-        {name: 'John Doe', email: 'john.doe2@example.com', login: 'JohnDoe'},
-      ]
+      const expected = [{name: 'John Doe', email: 'john.doe2@example.com', login: 'JohnDoe'}]
 
       expect(actual).toEqual(expected)
     })
   })
-})
 
   describe('getMergeData', () => {
     it('should return a merge strategy with a merge headRefName', () => {
@@ -470,7 +467,7 @@ describe('utils', () => {
         category: 'Components',
         'release note': 'My release notes',
         'breaking change': 'Some breaking changes',
-        additionalAuthors: ['@JohnDoe', 'Jane Doe']
+        additionalAuthors: ['@JohnDoe', 'Jane Doe'],
       }
 
       expect(getCommitParts(input)).toEqual(expected)
