@@ -53,7 +53,10 @@ async function run() {
       core.info(`\nMessage: ${e}`)
     }
 
-    if (prData.repository?.pullRequest?.mergeable === 'MERGEABLE') {
+    if (
+      prData.repository?.pullRequest?.mergeable === 'MERGEABLE' &&
+      prData.repository.pullRequest.mergeStateStatus === 'CLEAN'
+    ) {
       // Automerge failed. Try a straight merge
       await repo.merge({
         pullRequestId: id,
@@ -62,7 +65,7 @@ async function run() {
     } else {
       // PR is not mergeable
       throw new Error(
-        `Pull request is not mergeable. Github mergeability: ${prData.repository?.pullRequest?.mergeable}`,
+        `Pull request is not mergeable. Github mergeability: ${prData.repository?.pullRequest?.mergeable}. Github Merge status: ${prData.repository?.pullRequest?.mergeStateStatus}`,
       )
     }
   }
