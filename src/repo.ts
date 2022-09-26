@@ -52,6 +52,31 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                 baseRefName
                 id
                 mergeable
+                author {
+                  login
+                }
+                # Touch-ups tend to be at the end, so use 'last' to avoid paging
+                commits(last: 100) {
+                  totalCount
+                  nodes {
+                    commit {
+                      # additions and deletions to figure out contribution amount
+                      additions
+                      deletions
+                      message
+                      authoredByCommitter
+                      authors(first: 5) {
+                        nodes {
+                          name
+                          email
+                          user {
+                            login
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
                 autoMergeRequest {
                   commitBody
                   commitHeadline

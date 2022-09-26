@@ -339,7 +339,7 @@
           "email": "noreply@github.com",
           "date": "2021-08-24T21:19:53Z"
         },
-        "message": "docs: Update inter-linking to match Canvas Site (#1220)\n\n\r\nCo-authored-by: James Fan <james@somewhatstrange.com>\r\nCo-authored-by: Alex Nicholls <anicholls3@gmail.com>",
+        "message": "docs: Update inter-linking to match Canvas Site (#1220)\n\n\r\nCo-authored-by: @jamesfan <james@somewhatstrange.com>\r\nCo-authored-by: @anicholls <anicholls3@gmail.com>",
         "tree": {
           "sha": "25a6e0e8a1e6fcd7c05e18b02db9bc6b8819bafd",
           "url": "https://api.github.com/repos/Workday/canvas-kit/git/trees/25a6e0e8a1e6fcd7c05e18b02db9bc6b8819bafd"
@@ -1534,7 +1534,7 @@
           "email": "noreply@github.com",
           "date": "2021-09-08T17:22:51Z"
         },
-        "message": "feat(icon): Add shouldMirror prop to icons (#1246)\n\nCo-authored-by: Stefan Urosevic <stefanuros@gmail.com>\r\nCo-authored-by: Alan B Smith <a.bax.smith@gmail.com>",
+        "message": "feat(icon): Add shouldMirror prop to icons (#1246)\n\nCo-authored-by: @stefanuros <stefanuros@gmail.com>\r\nCo-authored-by: @alanbsmith <a.bax.smith@gmail.com>",
         "tree": {
           "sha": "f1c66840eb906e3d1ec13921a071579e9a0ae959",
           "url": "https://api.github.com/repos/Workday/canvas-kit/git/trees/f1c66840eb906e3d1ec13921a071579e9a0ae959"
@@ -1850,7 +1850,7 @@
           "email": "noreply@github.com",
           "date": "2021-09-09T18:03:37Z"
         },
-        "message": "fix: Add to Box omitted props list (#1256)\n\n* fix: Add to Box omitted props list\r\n\r\n* fix: Add additional captured props\r\n\r\nCo-authored-by: Alex Nicholls <anicholls3@gmail.com>",
+        "message": "fix: Add to Box omitted props list (#1256)\n\n* fix: Add to Box omitted props list\r\n\r\n* fix: Add additional captured props\r\n\r\nCo-authored-by: @anicholls <anicholls3@gmail.com>",
         "tree": {
           "sha": "484f33a251e4bbaf06b7d69e4ee81b2fdd676872",
           "url": "https://api.github.com/repos/Workday/canvas-kit/git/trees/484f33a251e4bbaf06b7d69e4ee81b2fdd676872"

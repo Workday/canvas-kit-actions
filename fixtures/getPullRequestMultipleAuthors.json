@@ -1,0 +1,726 @@
+{
+  "repository": {
+    "pullRequest": {
+      "body": "## Summary\r\n\r\nThis component gives users the ability to expand and collapse content using a button.\r\n\r\nResolves: #638\r\n\r\n![category](https://img.shields.io/badge/release_category-Components-blue)\r\n\r\n---\r\n\r\n## Checklist\r\n\r\n<!-- Remove items that do not apply. For completed items, change [ ] to [x]. -->\r\n\r\n- [x] tests are changed or added\r\n- [x] code has been documented\r\n- [x] design approved final implementation\r\n- [x] a11y approved final implementation\r\n- [x] code adheres to the [API & Pattern guidelines](https://workday.github.io/canvas-kit/?path=/story/welcome-dev-docs-api-pattern-guidelines--page)\r\n\r\n### Release Notes\r\nBased off of the `Disclosure` model, we've added an expandable component that allows consumers to hide/show content.",
+      "title": "feat(labs): Add expandable container component",
+      "number": 1562,
+      "headRefName": "expandable-container",
+      "baseRefName": "prerelease/minor",
+      "id": "PR_kwDOCwpuNs43MkV5",
+      "mergeable": "UNKNOWN",
+      "author": {
+        "login": "giulialubet"
+      },
+      "commits": {
+        "totalCount": 40,
+        "nodes": [
+          {
+            "commit": {
+              "additions": 357,
+              "deletions": 0,
+              "message": "feat(expandable-container): Initial expandable container files",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 14,
+              "deletions": 18,
+              "message": "feat(expandable-container): Use disclosure model",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 9,
+              "deletions": 9,
+              "message": "feat(expandable-container): Use disclosure model",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 167,
+              "deletions": 113,
+              "message": "feat(expandable-container): Add header and button sub components",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 8,
+              "deletions": 89,
+              "message": "feat(expandable-container): Remove button styles and icons",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 39,
+              "deletions": 4,
+              "message": "feat(expandable-container): Update stories and rename props",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 91,
+              "deletions": 80,
+              "message": "feat(expandable): Rename component expandable and heading",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 46,
+              "deletions": 37,
+              "message": "feat(expandable): Minor fixes",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 133,
+              "deletions": 76,
+              "message": "feat(expandable): Refactor heading, button to target with sub components",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 121,
+              "deletions": 62,
+              "message": "feat(expandable): Refactor for only single line",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 212,
+              "deletions": 46,
+              "message": "feat(expandable): Add styling and update README",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 31,
+              "deletions": 27,
+              "message": "feat(expandable): Button focus, hover states and prop updates",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 188,
+              "deletions": 218,
+              "message": "feat(expandable): Update chevrons and documentation",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 137,
+              "deletions": 72,
+              "message": "feat(expandable): Update file names, rename chevron to icon, update css",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 11,
+              "deletions": 13,
+              "message": "feat(expandable): Destructure props and css updates",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 71,
+              "deletions": 67,
+              "message": "feat(expandable): Create behavior hooks",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 29,
+              "deletions": 27,
+              "message": "feat(expandable): Update index, optional heading",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 116,
+              "deletions": 58,
+              "message": "feat(expandable): Update comments, stories, and component refs",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 21,
+              "deletions": 22,
+              "message": "feat(expandable): Rename open prop and remove as from icons",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 9,
+              "deletions": 6,
+              "message": "feat(expandable): Re-destructure props",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 12,
+              "deletions": 11,
+              "message": "feat(expandable): Rename styled components and fix hook",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 20,
+              "deletions": 16,
+              "message": "feat(expandable): Modify Expandable.Avatar to accept a ref, update story",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 68,
+              "deletions": 20,
+              "message": "feat(expandable): Merge prerelease/major and resolve conflict",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 3,
+              "deletions": 6,
+              "message": "feat(expandable): Clean up hooks",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 15,
+              "deletions": 11,
+              "message": "feat(expandable): Clean up prop names",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 25,
+              "deletions": 5,
+              "message": "Merge branch 'prerelease/major' of https://github.com/Workday/canvas-kit into expandable-container",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 27,
+              "deletions": 16,
+              "message": "feat(expandable): Update documentation",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 10433,
+              "deletions": 4460,
+              "message": "Merge branch 'prerelease/minor' of https://github.com/Workday/canvas-kit into expandable-container",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 153,
+              "deletions": 157,
+              "message": "feat(expandable): Use new component utility functions",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 76,
+              "deletions": 39,
+              "message": "feat(expandable): Create expandable model and use Box",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Giulia Lubet",
+                    "email": "giulia.lubet@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 1800,
+              "deletions": 344,
+              "message": "Merge branch 'prerelease/minor' into expandable-container",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Manuel Carrera",
+                    "email": "mannycarrera4@users.noreply.github.com",
+                    "user": {
+                      "login": "mannycarrera4"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 64,
+              "deletions": 93,
+              "message": "feat(expandable): Combine icons into single component",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "stephen.om",
+                    "email": "stephen.om@workday.com",
+                    "user": {
+                      "login": "StephenOm"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 87,
+              "deletions": 21,
+              "message": "feat(expandable): Add cypress tests",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "stephen.om",
+                    "email": "stephen.om@workday.com",
+                    "user": {
+                      "login": "StephenOm"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 33,
+              "deletions": 16,
+              "message": "feat(expandable): Add more information to usage and update styles",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "stephen.om",
+                    "email": "stephen.om@workday.com",
+                    "user": {
+                      "login": "StephenOm"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 1,
+              "deletions": 2,
+              "message": "feat(expandable): Update title text padding for updated figma",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "stephen.om",
+                    "email": "stephen.om@workday.com",
+                    "user": {
+                      "login": "StephenOm"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 403,
+              "deletions": 303,
+              "message": "Merge branch 'prerelease/minor' into expandable-container",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Manuel Carrera",
+                    "email": "mannycarrera4@users.noreply.github.com",
+                    "user": {
+                      "login": "mannycarrera4"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 1,
+              "deletions": 1,
+              "message": "feat(expandable): Fix type of avatar component",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "stephen.om",
+                    "email": "stephen.om@workday.com",
+                    "user": {
+                      "login": "StephenOm"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 403,
+              "deletions": 303,
+              "message": "Merge branch 'expandable-container' of github.com:giulialubet/canvas-kit into expandable-container",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "stephen.om",
+                    "email": "stephen.om@workday.com",
+                    "user": {
+                      "login": "StephenOm"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 103,
+              "deletions": 96,
+              "message": "Merge branch 'prerelease/minor' into expandable-container",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Manuel Carrera",
+                    "email": "mannycarrera4@users.noreply.github.com",
+                    "user": {
+                      "login": "mannycarrera4"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 188,
+              "deletions": 94,
+              "message": "Merge branch 'prerelease/minor' into expandable-container",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Manuel Carrera",
+                    "email": "mannycarrera4@users.noreply.github.com",
+                    "user": {
+                      "login": "mannycarrera4"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "autoMergeRequest": {
+        "commitBody": "This component gives users the ability to expand and collapse content using a button.\n\nResolves: #638\n\n[category:Components]",
+        "commitHeadline": "feat(labs): Add expandable container component (#1562)",
+        "enabledAt": "2022-08-17T19:36:07Z"
+      }
+    }
+  }
+}

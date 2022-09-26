@@ -6380,6 +6380,11 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(438);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
+// This file is the entry point for the `build:ncc` script. DO NOT remove this file unless you are
+// planning to change the way actions build. `ncc` will use this entry point to create a single JS
+// file including all `node_modules` dependencies. This method ensures only required files in
+// `node_modules` are actually included in the final build artifact which reduces a lot of bytes
+// downloaded when GitHub actions calls files. All `src/actions/*` files import this `lib` directly.
 
 
 
