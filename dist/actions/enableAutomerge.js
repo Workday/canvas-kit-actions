@@ -4,7 +4,7 @@ const lib_1 = require("../lib");
 const repo_1 = require("../repo");
 const utils_1 = require("../utils");
 async function run() {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     const token = lib_1.actionsCore.getInput('token');
     const number = lib_1.actionsCore.getInput('number');
     const repo = (0, repo_1.getRepo)({ token, ...lib_1.actionsGithub.context.repo });
@@ -41,13 +41,14 @@ async function run() {
     }
     catch (e) {
         lib_1.actionsCore.info(`Could not enable auto merge. Trying to directly merge.`);
+        lib_1.actionsCore.info(`Mergeable state: ${(_f = (_e = prData.repository) === null || _e === void 0 ? void 0 : _e.pullRequest) === null || _f === void 0 ? void 0 : _f.mergeStateStatus}`);
         if (e instanceof Error) {
             lib_1.actionsCore.info(`\nMessage: ${e.message}`);
         }
         else if (typeof e === 'string') {
             lib_1.actionsCore.info(`\nMessage: ${e}`);
         }
-        if (((_f = (_e = prData.repository) === null || _e === void 0 ? void 0 : _e.pullRequest) === null || _f === void 0 ? void 0 : _f.mergeable) === 'MERGEABLE') {
+        if (((_h = (_g = prData.repository) === null || _g === void 0 ? void 0 : _g.pullRequest) === null || _h === void 0 ? void 0 : _h.mergeable) === 'MERGEABLE') {
             // Automerge failed. Try a straight merge
             await repo.merge({
                 pullRequestId: id,
@@ -56,7 +57,7 @@ async function run() {
         }
         else {
             // PR is not mergeable
-            throw new Error(`Pull request is not mergeable. Github mergeability: ${(_h = (_g = prData.repository) === null || _g === void 0 ? void 0 : _g.pullRequest) === null || _h === void 0 ? void 0 : _h.mergeable}`);
+            throw new Error(`Pull request is not mergeable. Github mergeability: ${(_k = (_j = prData.repository) === null || _j === void 0 ? void 0 : _j.pullRequest) === null || _k === void 0 ? void 0 : _k.mergeable}`);
         }
     }
     lib_1.actionsCore.info(`Enabled Github's automerge feature. Success!`);

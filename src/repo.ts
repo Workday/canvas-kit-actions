@@ -52,6 +52,7 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
                 baseRefName
                 id
                 mergeable
+                mergeStateStatus
                 author {
                   login
                 }

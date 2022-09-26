@@ -46,6 +46,7 @@ async function run() {
     })
   } catch (e) {
     core.info(`Could not enable auto merge. Trying to directly merge.`)
+    core.info(`Mergeable state: ${prData.repository?.pullRequest?.mergeStateStatus}`)
     if (e instanceof Error) {
       core.info(`\nMessage: ${e.message}`)
     } else if (typeof e === 'string') {
