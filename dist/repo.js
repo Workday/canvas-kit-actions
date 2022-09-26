@@ -4,7 +4,7 @@ exports.getRepo = void 0;
 const lib_1 = require("./lib");
 const gql = (strings) => strings.raw[0];
 function getRepo({ token, owner, repo }) {
-    const octokit = lib_1.actionsGithub.getOctokit(token);
+    const octokit = lib_1.actionsGithub.getOctokit(token, { previews: ['merge-info-preview'] });
     const repository = {
         async getCommits({ base, head }) {
             return octokit.rest.repos

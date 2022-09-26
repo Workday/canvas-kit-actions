@@ -19,7 +19,7 @@ interface GetRepoParams {
   currentBranch?: string
 }
 export function getRepo({token, owner, repo}: GetRepoParams) {
-  const octokit = actionsGithub.getOctokit(token)
+  const octokit = actionsGithub.getOctokit(token, {previews: ['merge-info-preview']})
 
   const repository = {
     async getCommits({base, head}: {base: string; head: string}) {
