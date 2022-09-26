@@ -39,6 +39,7 @@ async function run() {
   }
 
   try {
+    core.info(`Attempting to enable Github's automerge feature.`)
     await repo.enableAutoMerge({
       id,
       ...mergeData,
@@ -61,6 +62,7 @@ async function run() {
       )
     }
   }
+  core.info(`Enabled Github's automerge feature. Success!`)
 
   core.setOutput('strategy', mergeData.mergeMethod)
 }
