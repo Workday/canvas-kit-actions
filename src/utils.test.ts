@@ -28,6 +28,7 @@ function createTestPullRequest(input: {
         body: '',
         number: 1,
         mergeable: 'MERGEABLE',
+        mergeStateStatus: 'CLEAN',
         title: '',
         autoMergeRequest: {
           commitBody: '',

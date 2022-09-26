@@ -10,6 +10,7 @@ export type GetPullRequest = {
             baseRefName: string;
             id: string;
             mergeable: "CONFLICTING" | "MERGEABLE" | "UNKNOWN";
+            mergeStateStatus: "BEHIND" | "BLOCKED" | "CLEAN" | "DIRTY" | "DRAFT" | "HAS_HOOKS" | "UNKNOWN" | "UNSTABLE";
             author: ({
                 login: string;
             }) | null;
