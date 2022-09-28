@@ -1,0 +1,175 @@
+{
+  "repository": {
+    "pullRequest": {
+      "body": "## Summary\r\n\r\nAdd Cypress test to verify the menu closes when the tab key is pressed while the menu is open.\r\n\r\n## Release Category\r\nTests\r\n\r\n---\r\n\r\n",
+      "title": "test(menu): Add missing test case for tabbing out of a control",
+      "number": 1733,
+      "headRefName": "master",
+      "baseRefName": "master",
+      "id": "PR_kwDOCwpuNs49NSF-",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "BLOCKED",
+      "author": {
+        "login": "smopur"
+      },
+      "commits": {
+        "totalCount": 8,
+        "nodes": [
+          {
+            "commit": {
+              "additions": 2,
+              "deletions": 1,
+              "message": "fix: Ignore tabIndex to take elements out of the focus order",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Satish Mopur",
+                    "email": "satish.mopur@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 4,
+              "deletions": 6,
+              "message": "Merge branch 'master' into master",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Manuel Carrera",
+                    "email": "mannycarrera4@users.noreply.github.com",
+                    "user": {
+                      "login": "mannycarrera4"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 101,
+              "deletions": 94,
+              "message": "Merge branch 'master' into master",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Alan B Smith",
+                    "email": "a.bax.smith@gmail.com",
+                    "user": {
+                      "login": "alanbsmith"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 18,
+              "deletions": 0,
+              "message": "fix: Added automation",
+              "authoredByCommitter": true,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Satish Mopur",
+                    "email": "satish.mopur@workday.com",
+                    "user": null
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 205,
+              "deletions": 96,
+              "message": "Merge branch 'master' into master",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Manuel Carrera",
+                    "email": "mannycarrera4@users.noreply.github.com",
+                    "user": {
+                      "login": "mannycarrera4"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 2,
+              "deletions": 2,
+              "message": "Update cypress/integration/Menu.spec.ts",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Nicholas Boll",
+                    "email": "nicholas.boll@gmail.com",
+                    "user": {
+                      "login": "NicholasBoll"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 2928,
+              "deletions": 485,
+              "message": "Merge branch 'master' into master",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Nicholas Boll",
+                    "email": "nicholas.boll@gmail.com",
+                    "user": {
+                      "login": "NicholasBoll"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "commit": {
+              "additions": 280,
+              "deletions": 111,
+              "message": "Merge branch 'master' into master",
+              "authoredByCommitter": false,
+              "authors": {
+                "nodes": [
+                  {
+                    "name": "Nicholas Boll",
+                    "email": "nicholas.boll@gmail.com",
+                    "user": {
+                      "login": "NicholasBoll"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "autoMergeRequest": {
+        "commitBody": "Add Cypress test to verify the menu closes when the tab key is pressed while the menu is open.\n\n[category:Tests]",
+        "commitHeadline": "test(menu): Add missing test case for tabbing out of a control (#1733)",
+        "enabledAt": "2022-09-23T23:18:53Z"
+      }
+    }
+  }
+}
