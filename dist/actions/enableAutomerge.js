@@ -49,7 +49,9 @@ async function run() {
             lib_1.actionsCore.info(`\nMessage: ${e}`);
         }
         if (((_h = (_g = prData.repository) === null || _g === void 0 ? void 0 : _g.pullRequest) === null || _h === void 0 ? void 0 : _h.mergeable) === 'MERGEABLE' &&
-            prData.repository.pullRequest.mergeStateStatus === 'CLEAN') {
+            (prData.repository.pullRequest.mergeStateStatus === 'CLEAN' ||
+                prData.repository.pullRequest.mergeStateStatus === 'UNSTABLE') // "UNSTABLE" means not all status checks have passed, but all required ones passed. If not all required passed, the status is BLOCKED
+        ) {
             // Automerge failed. Try a straight merge
             await repo.merge({
                 pullRequestId: id,
