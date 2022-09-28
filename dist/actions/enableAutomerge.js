@@ -60,6 +60,7 @@ async function run() {
         }
         else {
             // PR is not mergeable
+            lib_1.actionsCore.info(`Status checks have either failed or are currently running. Once status checks have passed, re-add the automerge label.`);
             throw new Error(`Pull request is not mergeable. Github mergeability: ${(_k = (_j = prData.repository) === null || _j === void 0 ? void 0 : _j.pullRequest) === null || _k === void 0 ? void 0 : _k.mergeable}. Github Merge status: ${(_m = (_l = prData.repository) === null || _l === void 0 ? void 0 : _l.pullRequest) === null || _m === void 0 ? void 0 : _m.mergeStateStatus}`);
         }
     }
