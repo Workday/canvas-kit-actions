@@ -96,6 +96,7 @@ export function getMergeData(prData: GetPullRequest) {
   // Create an array of all authors listed in commits. It will look like:
   // [ {login: null, name: "John Doe", email: "john.doe@example.com"} ]
   const additionalAuthors = (prData.repository?.pullRequest?.commits.nodes || [])
+    .filter(n => !n?.commit.message.startsWith('Merge branch')) // filter out merge commits
     .flatMap(
       node =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
