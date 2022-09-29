@@ -1,0 +1,10 @@
+name: 'Close Related Issues'
+description: 'Closes issues related to a pull request regardless if those issues are in the default branch'
+author: 'Workday'
+inputs:
+  token:
+    required: true
+    description: 'A github token with at least read access to the repository'
+runs:
+  using: 'node12'
+  main: '../dist/actions/closeRelatedIssues.js'

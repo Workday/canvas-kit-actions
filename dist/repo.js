@@ -20,6 +20,24 @@ function getRepo({ token, owner, repo }) {
             });
             // return octokit.rest.git.getRef({repo, owner, ref: `heads/master`})
         },
+        /** Gets the related issues from a pull request */
+        async getRelatedIssues(number) {
+            return octokit.graphql(gql `
+          query GetRelatedIssues($owner: String!, $repo: String!, $number: Int!) {
+            repository(name: $repo, owner: $owner) {
+              pullRequest(number: $number) {
+                closingIssuesReferences(first: 5) {
+                  nodes {
+                    id
+                    title
+                    number
+                  }
+                }
+              }
+            }
+          }
+        `, { owner, repo, number });
+        },
         async getPullRequest(number) {
             return octokit.graphql(gql `
           query GetPullRequest($owner: String!, $repo: String!, $number: Int!) {
@@ -77,6 +95,19 @@ function getRepo({ token, owner, repo }) {
             //     },
             //   },
             // })
+        },
+        async closeIssue(id) {
+            return octokit.graphql(gql `
+          mutation UpdateIssueInput($id: ID!, $state: IssueState!) {
+            updateIssue(input: {id: $id, state: $state}) {
+              issue {
+                id
+                closedAt
+                state
+              }
+            }
+          }
+        `, { id, state: 'CLOSED' });
         },
         async enableAutoMerge(input) {
             return octokit.graphql(gql `
