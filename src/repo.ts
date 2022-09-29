@@ -8,7 +8,9 @@ import {
   EnablePullRequestAutoMergeVariables,
 } from './__generated__/enable-pull-request-auto-merge'
 import {GetPullRequest} from './__generated__/get-pull-request'
+import {GetRelatedIssues} from './__generated__/get-related-issues'
 import {MergePullRequestVariables} from './__generated__/merge-pull-request'
+import {UpdateIssueInput, UpdateIssueInputVariables} from './__generated__/update-issue-input'
 
 const gql = (strings: TemplateStringsArray): string => strings.raw[0]
 
@@ -37,6 +39,28 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
           )
         })
       // return octokit.rest.git.getRef({repo, owner, ref: `heads/master`})
+    },
+
+    /** Gets the related issues from a pull request */
+    async getRelatedIssues(number: number) {
+      return octokit.graphql<GetRelatedIssues>(
+        gql`
+          query GetRelatedIssues($owner: String!, $repo: String!, $number: Int!) {
+            repository(name: $repo, owner: $owner) {
+              pullRequest(number: $number) {
+                closingIssuesReferences(first: 5) {
+                  nodes {
+                    id
+                    title
+                    number
+                  }
+                }
+              }
+            }
+          }
+        `,
+        {owner, repo, number},
+      )
     },
 
     async getPullRequest(number: number) {
@@ -99,6 +123,23 @@ export function getRepo({token, owner, repo}: GetRepoParams) {
       //     },
       //   },
       // })
+    },
+
+    async closeIssue(id: string) {
+      return octokit.graphql<UpdateIssueInput>(
+        gql`
+          mutation UpdateIssueInput($id: ID!, $state: IssueState!) {
+            updateIssue(input: {id: $id, state: $state}) {
+              issue {
+                id
+                closedAt
+                state
+              }
+            }
+          }
+        `,
+        {id, state: 'CLOSED'} as UpdateIssueInputVariables,
+      )
     },
 
     async enableAutoMerge(input: EnablePullRequestAutoMergeVariables) {
