@@ -351,6 +351,61 @@ describe('utils', () => {
         `,
       )
     })
+
+    it('should should not add co-author for merge commits', () => {
+      const expected = getMergeData(
+        createTestPullRequest({
+          pullRequest: {
+            headRefName: 'feat/add-something',
+            baseRefName: 'master',
+            title: 'feat: Add new component',
+            body: stripIndent`
+              ## Summary
+              Add a new Component
+
+              ## Release Category
+              Components
+            `,
+            number: 1240,
+            id: '',
+            author: {
+              login: 'janesmith',
+            },
+            commits: {
+              totalCount: 2,
+              nodes: [
+                {
+                  commit: {
+                    additions: 1,
+                    deletions: 1,
+                    message: 'Merge branch support into master',
+                    authoredByCommitter: true,
+                    authors: {
+                      nodes: [
+                        {
+                          name: 'John Doe',
+                          email: 'john.doe@example.com',
+                          user: null,
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        }),
+      )
+
+      expect(expected).toHaveProperty(
+        'commitBody',
+        stripIndent`
+          Add a new Component
+
+          [category:Components]
+        `,
+      )
+    })
   })
 
   describe('getSections', () => {
