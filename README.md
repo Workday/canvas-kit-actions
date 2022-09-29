@@ -39,3 +39,21 @@ Given a `fromRef`, a `toRef`, and a `tagName`, this action will perform a compar
 - name: Echo output
   run: echo "${{steps.generate-changeset.outputs.title}} ${{steps.generate-changeset.outputs.body}}"
 ```
+
+### `close-related-issues`
+
+#### Example
+
+```yml
+name: Close Linked Issues
+
+on:
+  pull_request_target:
+    types: [closed]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Workday/canvas-kit-actions/close-related-issues@v1
+```
