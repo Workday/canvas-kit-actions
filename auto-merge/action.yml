@@ -9,5 +9,5 @@ outputs:
   strategy:
     description: 'The merge strategy chosen by this action'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: '../dist/actions/autoMerge.js'
