@@ -22,5 +22,5 @@ outputs:
   body:
     description: 'The body of the changeset'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: '../dist/actions/generateChangeset.js'
