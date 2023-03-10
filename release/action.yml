@@ -19,7 +19,7 @@ inputs:
     description: 'The version override (example: "8.1.2"). Leave blank if you want to make patch release.'
 
 runs:
-  using: 'node16'
+  using: 'composite'
   steps:
     ## First, we'll checkout the repository. We don't persist credentials because we need a
     ## Personal Access Token to push on a branch that is protected. See
