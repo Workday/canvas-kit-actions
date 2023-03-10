@@ -8,12 +8,12 @@ inputs:
   gh_rw_token:
     required: true
     description: 'A github token with write and read access to the repository'
-  publish_token:
-    required: true
-  chromatic_code:
-    required: true
-  slack_webhook:
-    required: true
+  # publish_token:
+  #   required: true
+  # chromatic_code:
+  #   required: true
+  # slack_webhook:
+  #   required: true
   version:
     required: false
     description: 'The version override (example: "8.1.2"). Leave blank if you want to make patch release.'
@@ -128,66 +128,66 @@ runs:
       ## Build Storybook and extract component stories for Storybook aggregation. This will be used
       ## for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
       ## built assets mess up this command
-      - name: Build Storybook
-        run: |
-          yarn build-storybook --quiet
-          npx sb extract docs docs/stories.json
-      ## Build for packaging.
-      - name: Build
-        run: yarn build
+      # - name: Build Storybook
+      #   run: |
+      #     yarn build-storybook --quiet
+      #     npx sb extract docs docs/stories.json
+      # ## Build for packaging.
+      # - name: Build
+      #   run: yarn build
       ## Publish to npm. Must be run after a build
-      - name: Publish
-        run:
-          yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch ==
-          'master' && 'latest' || 'support'}}
-        env:
-          NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
-      # Push both the commit and tag created by Lerna's version command using a PAT
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ inputs.gh_rw_token }}
-          branch: ${{ github.ref }}
-          tags: true
-      ## Create a release on Github. This will trigger an internal Slack message
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ inputs.gh_token }}
-        with:
-          tag_name: v${{steps.new-tag.outputs.tag}}
-          release_name: v${{steps.new-tag.outputs.tag}}
-          body: |
-            ${{steps.changeset.outputs.body}}
-          draft: false
-          prerelease: false
-      ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
-      - name: Publish Storybook
-        if: steps.extract-branch.outputs.branch == 'master'
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages
-          folder: docs
-      ## Create a Chromatic baseline auto-accepting changes. Chromatic changes are already accepted
-      ## in PRs, so we don't need to manually approve them here again. This new baseline will be
-      ## used for future PRs. New PRs may show extra Chromatic changes until the "Update Branch"
-      ## button is used in PRs which will pull this new baseline.
-      - name: Update Chromatic Baseline
-        uses: chromaui/action@v1
-        with:
-          token: ${{ inputs.gh_token }}
-          projectToken: ${{ inputs.chromatic_code }}
-          storybookBuildDir: docs
-          exitOnceUploaded: true
-          exitZeroOnChanges: true
-          autoAcceptChanges: true
-      ## Notify Slack of any failures
-      - name: Report failures
-        if: ${{ failure() }}
-        run: node utils/report-failure.mjs
-        env:
-          SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
-          TRAVIS_BRANCH: ${{ steps.extract-branch.outputs.branch }}
-          TRAVIS_TEST_RESULT: ${{ job.status }}
-          TRAVIS_BUILD_URL:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # - name: Publish
+      #   run:
+      #     yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch ==
+      #     'master' && 'latest' || 'support'}}
+      #   env:
+      #     NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
+      # # Push both the commit and tag created by Lerna's version command using a PAT
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ inputs.gh_rw_token }}
+      #     branch: ${{ github.ref }}
+      #     tags: true
+      # ## Create a release on Github. This will trigger an internal Slack message
+      # - name: Create Release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ inputs.gh_token }}
+      #   with:
+      #     tag_name: v${{steps.new-tag.outputs.tag}}
+      #     release_name: v${{steps.new-tag.outputs.tag}}
+      #     body: |
+      #       ${{steps.changeset.outputs.body}}
+      #     draft: false
+      #     prerelease: false
+      # ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
+      # - name: Publish Storybook
+      #   if: steps.extract-branch.outputs.branch == 'master'
+      #   uses: JamesIves/github-pages-deploy-action@4.1.5
+      #   with:
+      #     branch: gh-pages
+      #     folder: docs
+      # ## Create a Chromatic baseline auto-accepting changes. Chromatic changes are already accepted
+      # ## in PRs, so we don't need to manually approve them here again. This new baseline will be
+      # ## used for future PRs. New PRs may show extra Chromatic changes until the "Update Branch"
+      # ## button is used in PRs which will pull this new baseline.
+      # - name: Update Chromatic Baseline
+      #   uses: chromaui/action@v1
+      #   with:
+      #     token: ${{ inputs.gh_token }}
+      #     projectToken: ${{ inputs.chromatic_code }}
+      #     storybookBuildDir: docs
+      #     exitOnceUploaded: true
+      #     exitZeroOnChanges: true
+      #     autoAcceptChanges: true
+      # ## Notify Slack of any failures
+      # - name: Report failures
+      #   if: ${{ failure() }}
+      #   run: node utils/report-failure.mjs
+      #   env:
+      #     SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
+      #     TRAVIS_BRANCH: ${{ steps.extract-branch.outputs.branch }}
+      #     TRAVIS_TEST_RESULT: ${{ job.status }}
+      #     TRAVIS_BUILD_URL:
+      #       ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
