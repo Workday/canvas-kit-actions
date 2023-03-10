@@ -61,12 +61,14 @@ runs:
         steps.yarn-cache.outputs.cache-hit != 'true' || steps.cypress-cache.outputs.cache-hit !=
         'true'
       run: yarn install --production=false
+      shell: bash
       env:
         CYPRESS_CACHE_FOLDER: .cache/cypress
 
     ## A `yarn bump` will create a commit and a tag. We need to set up the git user to do this.
     ## We'll make that user be the github-actions user.
     - name: Config git user
+      shell: bash
       run: |
         git config --global user.name "${{ github.actor }}"
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
@@ -75,27 +77,32 @@ runs:
     - name: Get previous tag
       id: previous-tag
       run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+      shell: bash
 
     ## `github.ref` is in the form of `refs/head/{name}`. This step extracts `{name}` and saves it
     ## as an output for later use
     - name: Extract branch name
       id: extract-branch
       run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+      shell: bash
 
     ## On the master branch, we'll do a patch bump on every commit by default.
     - name: Lerna Bump
       if: '!inputs.version'
       run: yarn bump --yes patch
+      shell: bash
 
     ## Manual version override
     - name: Lerna Bump
       if: 'inputs.version'
       run: yarn bump --yes ${{inputs.version}}
+      shell: bash
 
     ## Capture the new tag and store it for later use
     - name: Get new tag
       id: new-tag
       run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+      shell: bash
 
     ## Generate a changeset based on rules of the Canvas Kit repository
     - name: Generate Changeset
@@ -111,6 +118,7 @@ runs:
     ## usernames which add a nice human touch to release notes
     - name: Update Changelog
       run: node utils/update-changelog.js
+      shell: bash
       env:
         CHANGESET_TITLE: ${{steps.changeset.outputs.title}}
         CHANGESET_BODY: |
@@ -121,10 +129,12 @@ runs:
     - name: Commit and add Tag
       run: |
         git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
+      shell: bash
 
     - name: See git log
       run: |
         git log -n 1 --decorate=short
+      shell: bash
     ## Build Storybook and extract component stories for Storybook aggregation. This will be used
     ## for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
     ## built assets mess up this command
