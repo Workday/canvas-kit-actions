@@ -68,8 +68,8 @@ runs:
       if:
         steps.yarn-cache.outputs.cache-hit != 'true' || steps.cypress-cache.outputs.cache-hit !=
         'true'
-      run: yarn install --production=false
       shell: bash
+      run: yarn install --production=false
       env:
         CYPRESS_CACHE_FOLDER: .cache/cypress
 
@@ -96,14 +96,13 @@ runs:
 
     ## Manual version override, patch as default
     - name: Lerna Bump
-      run: yarn bump --yes ${{inputs.version}}
       shell: bash
+      run: yarn bump --yes ${{inputs.version}}
 
     ## Capture the new tag and store it for later use
     - name: Get new tag
       id: new-tag
       run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
-      shell: bash
 
     ## Generate a changeset based on rules of the Canvas Kit repository
     - name: Generate Changeset
@@ -118,8 +117,8 @@ runs:
     ## We could have gone the route of a lerna changeset plugin, but we would lose access to
     ## usernames which add a nice human touch to release notes
     - name: Update Changelog
-      run: node utils/update-changelog.js
       shell: bash
+      run: node utils/update-changelog.js
       env:
         CHANGESET_TITLE: ${{steps.changeset.outputs.title}}
         CHANGESET_BODY: |
@@ -128,29 +127,32 @@ runs:
     ## So far, the changes to to the workspace have not been committed. We'll commit them now and
     ## create a tag
     - name: Commit and add Tag
+      shell: bash
       run: |
         git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
-      shell: bash
 
     - name: See git log
+      shell: bash
       run: |
         git log -n 1 --decorate=short
-      shell: bash
 
     # Build Storybook and extract component stories for Storybook aggregation. This will be used
     # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
     # built assets mess up this command
     - name: Build Storybook
+      shell: bash
       run: |
         yarn build-storybook --quiet
         npx sb extract docs docs/stories.json
 
     ## Build for packaging.
     - name: Build
+      shell: bash
       run: yarn build
 
     # Publish to npm. Must be run after a build
     - name: Publish
+      shell: bash
       run:
         yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch ==
         'master' && 'latest' || 'support'}}
@@ -203,6 +205,7 @@ runs:
     ## Notify Slack of any failures
     - name: Report failures
       if: ${{ failure() }}
+      shell: bash
       run: node utils/report-failure.mjs
       env:
         SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
