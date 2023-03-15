@@ -29,14 +29,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    ## First, we'll checkout the repository. We don't persist credentials because we need a
-    ## Personal Access Token to push on a branch that is protected. See
-    ## https://github.com/cycjimmy/semantic-release-action#basic-usage
-    - uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-        fetch-depth: 0 # Used for conventional commit ranges
-
     ## This step installs node and sets up several matchers (regex matching for Github
     ## Annotations). See
     ## https://github.com/actions/setup-node/blob/25316bbc1f10ac9d8798711f44914b1cf3c4e954/src/main.ts#L58-L65
