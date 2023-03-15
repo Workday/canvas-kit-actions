@@ -102,6 +102,7 @@ runs:
     ## Capture the new tag and store it for later use
     - name: Get new tag
       id: new-tag
+      shell: bash
       run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
 
     ## Generate a changeset based on rules of the Canvas Kit repository
