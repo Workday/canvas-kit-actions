@@ -14,6 +14,8 @@ async function run() {
 
   const commits = await api.getCommits({base: fromRef, head: toRef})
 
+  console.log("repo:", repo);
+
   const {title, body, date} = getReleaseNotes(owner, repo, commits, tagName)
 
   core.setOutput('title', title)
