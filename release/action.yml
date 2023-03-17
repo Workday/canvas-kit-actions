@@ -14,13 +14,6 @@ inputs:
   chromatic_project_token:
     required: true
     description: 'Chromatic project token to deploy a storybook.'
-  slack_webhook:
-    required: true
-    description: 'Slack webhook token to connect to make requests to Slack API'
-  node_version:
-    required: false
-    description: 'Version of Node'
-    default: '14.x'
   version:
     required: false
     description: 'The version override (example: "8.1.2"). Leave blank if you want to make patch release.'
@@ -29,42 +22,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    ## This step installs node and sets up several matchers (regex matching for Github
-    ## Annotations). See
-    ## https://github.com/actions/setup-node/blob/25316bbc1f10ac9d8798711f44914b1cf3c4e954/src/main.ts#L58-L65
-    - uses: actions/setup-node@v2.4.0
-      with:
-        node-version: ${{ inputs.node_version }}
-        registry-url: https://registry.npmjs.org
-
-    ## The caching steps create a cache key based on the OS and hash of the yarn.lock file. A
-    ## cache hit will copy files from Github cache into the `node_modules` and `.cache/cypress`
-    ## folders. A cache hit will skip the cache steps
-    - name: Cache node modules
-      id: yarn-cache
-      uses: actions/cache@v2
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-modules-hash-${{ hashFiles('yarn.lock') }}
-
-    - name: Cache Cypress
-      id: cypress-cache
-      uses: actions/cache/@v2
-      with:
-        path: .cache/cypress
-        key: ${{ runner.os }}-cypress-cache-version-${{ steps.cypress-version.outputs.version }}
-
-    ## If both `node_modules` and `.cache/cypress` were cache hits, we're going to skip the `yarn
-    ## install` step. This effectively saves up to 3m on a cache hit build.
-    - name: Install Packages
-      if:
-        steps.yarn-cache.outputs.cache-hit != 'true' || steps.cypress-cache.outputs.cache-hit !=
-        'true'
-      shell: bash
-      run: yarn install --production=false
-      env:
-        CYPRESS_CACHE_FOLDER: .cache/cypress
-
     ## A `yarn bump` will create a commit and a tag. We need to set up the git user to do this.
     ## We'll make that user be the github-actions user.
     - name: Config git user
@@ -194,15 +151,3 @@ runs:
         exitOnceUploaded: true
         exitZeroOnChanges: true
         autoAcceptChanges: true
-
-    ## Notify Slack of any failures
-    - name: Report failures
-      if: ${{ failure() }}
-      shell: bash
-      run: node utils/report-failure.mjs
-      env:
-        SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
-        TRAVIS_BRANCH: ${{ steps.extract-branch.outputs.branch }}
-        TRAVIS_TEST_RESULT: ${{ job.status }}
-        TRAVIS_BUILD_URL:
-          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
