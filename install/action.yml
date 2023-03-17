@@ -44,8 +44,7 @@ runs:
     ## If both `node_modules` and `.cache/cypress` were cache hits, we're going to skip the `yarn
     ## install` step. This effectively saves up to 3m on a cache hit build.
     - name: Install Packages
-      if: steps.yarn-cache.outputs.cache-hit != 'true' || steps.cypress-cache.outputs.cache-hit !=
-        'true'
+      if: steps.yarn-cache.outputs.cache-hit != 'true' || steps.cypress-cache.outputs.cache-hit != 'true'
       shell: bash
       run: yarn install --production=false
       env:
