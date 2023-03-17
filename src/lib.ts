@@ -5,5 +5,6 @@
 // downloaded when GitHub actions calls files. All `src/actions/*` files import this `lib` directly.
 import * as actionsCore from '@actions/core'
 import * as actionsGithub from '@actions/github'
+import fetch from 'node-fetch'
 
-export {actionsCore, actionsGithub}
+export {actionsCore, actionsGithub, fetch}
