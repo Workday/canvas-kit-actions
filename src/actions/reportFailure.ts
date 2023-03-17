@@ -13,9 +13,9 @@ async function run() {
     body: JSON.stringify({
       attachments: [
         {
-          fallback: `${branch} build failure`,
+          fallback: `Build Failure on '${branch}'`,
           color: 'danger',
-          title: `${branch} build failure`,
+          title: `Build Failure on '${branch}'`,
           title_link: `${serverUrl}/${repo}/actions/runs/${runId}`,
           text: `${slackMessage}\n`,
           ts: Date.now(),
