@@ -97,5 +97,5 @@ jobs:
           gh_rw_token: ${{ secrets.GH_RW_TOKEN }}
           publish_token: ${{ secrets.NPM_CI_PUBLISH_TOKEN }}
           chromatic_project_token: ${{ secrets.CHROMATIC_APP_CODE }}
-          node_version: '14.x'
+          version: 'minor'
 ```
