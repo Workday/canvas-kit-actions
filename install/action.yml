@@ -1,0 +1,52 @@
+name: 'Install'
+description: 'yarn install with caching. A cache hit will skip the "yarn install" step, saving time'
+author: 'Workday'
+inputs:
+  node_version:
+    required: false
+    description: 'Version of Node'
+    default: '14.x'
+
+runs:
+  using: 'composite'
+  steps:
+    ## This step installs node and sets up several matchers (regex matching for Github
+    ## Annotations). See
+    ## https://github.com/actions/setup-node/blob/25316bbc1f10ac9d8798711f44914b1cf3c4e954/src/main.ts#L58-L65
+    - uses: actions/setup-node@v2.4.0
+      with:
+        node-version: ${{ inputs.node_version }}
+        registry-url: https://registry.npmjs.org
+
+    ## Gets the Cypress version from the yarn.lock file
+    - name: Get Cypress Version
+      shell: bash
+      id: cypress-version
+      run: echo "::set-output name=version::$(node ${{ github.action_path }}/get-cypress-version.js)"
+
+    ## The caching steps create a cache key based on the OS and hash of the yarn.lock file. A
+    ## cache hit will copy files from Github cache into the `node_modules` and `.cache/cypress`
+    ## folders. A cache hit will skip the cache steps
+    - name: Cache node modules
+      id: yarn-cache
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ inputs.node_version }}-node-modules-hash-${{ hashFiles('yarn.lock') }}
+
+    - name: Cache Cypress
+      id: cypress-cache
+      uses: actions/cache/@v2
+      with:
+        path: .cache/cypress
+        key: ${{ runner.os }}-${{ inputs.node_version }}-cypress-cache-version-${{ steps.cypress-version.outputs.version }}
+
+    ## If both `node_modules` and `.cache/cypress` were cache hits, we're going to skip the `yarn
+    ## install` step. This effectively saves up to 3m on a cache hit build.
+    - name: Install Packages
+      if: steps.yarn-cache.outputs.cache-hit != 'true' || steps.cypress-cache.outputs.cache-hit !=
+        'true'
+      shell: bash
+      run: yarn install --production=false
+      env:
+        CYPRESS_CACHE_FOLDER: .cache/cypress
