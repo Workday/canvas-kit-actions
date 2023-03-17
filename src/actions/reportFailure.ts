@@ -5,7 +5,7 @@ async function run() {
   const slackMessage = core.getInput('slackMessage')
   const {ref, runId, repo, serverUrl} = github.context
 
-  const branch = ref.replace('/refs/heads/', '')
+  const branch = ref.replace('refs/heads/', '')
 
   await fetch(slackWebhook, {
     method: 'post',
@@ -13,10 +13,10 @@ async function run() {
     body: JSON.stringify({
       attachments: [
         {
-          fallback: `Build Failure on '${branch}'`,
+          fallback: `Build Failure on branch '${branch}'`,
           color: 'danger',
-          title: `Build Failure on '${branch}'`,
-          title_link: `${serverUrl}/${repo}/actions/runs/${runId}`,
+          title: `Build Failure on branch '${branch}'`,
+          title_link: `${serverUrl}/${repo.owner}/${repo.repo}/actions/runs/${runId}`,
           text: `${slackMessage}\n`,
           ts: Date.now(),
         },
