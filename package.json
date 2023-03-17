@@ -43,6 +43,7 @@
     "graphql": "^15.3.0",
     "jest": "^27.2.0",
     "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.1",
     "prettier": "^2.4.0",
     "ts-graphql-plugin": "^2.1.4",
     "ts-jest": "^27.0.5",

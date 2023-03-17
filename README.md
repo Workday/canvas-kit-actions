@@ -59,3 +59,23 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+### `report-failure`
+
+Creates a failure message in Slack given a webhook URL and a message.
+
+#### Example
+
+```yml
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: Workday/canvas-kit-actions/report-failure@v1
+        if: failure()
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackMessage: |
+            Release job failed. Please check error logs.
+```
