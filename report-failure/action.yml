@@ -1,0 +1,14 @@
+name: 'Report Failure'
+description: 'Report a Failure to Slack'
+author: 'Workday'
+inputs:
+  slackWebhook:
+    required: true
+    description: 'A URL to post slack messages to'
+  slackMessage:
+    required: true
+    description: 'The slack message'
+
+runs:
+  using: 'node16'
+  main: '../dist/actions/reportFailure.js'
