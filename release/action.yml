@@ -1,0 +1,153 @@
+name: 'Release'
+description: 'Automate a release'
+author: 'Workday'
+inputs:
+  gh_token:
+    required: true
+    description: 'An authentication token for github.com API requests.'
+  gh_rw_token:
+    required: true
+    description: 'A personal access token with read-write permissions.'
+  publish_token:
+    required: true
+    description: 'Environment variable which is required for authenticating with npm to publish the package.'
+  chromatic_project_token:
+    required: true
+    description: 'Chromatic project token to deploy a storybook.'
+  version:
+    required: false
+    description: 'The version override (example: "8.1.2"). Leave blank if you want to make patch release.'
+    default: 'patch'
+
+runs:
+  using: 'composite'
+  steps:
+    ## A `yarn bump` will create a commit and a tag. We need to set up the git user to do this.
+    ## We'll make that user be the github-actions user.
+    - name: Config git user
+      shell: bash
+      run: |
+        git config --global user.name "${{ github.actor }}"
+        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+    ## Capture the previous tag and store it for later use
+    - name: Get previous tag
+      id: previous-tag
+      run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+      shell: bash
+
+    ## `github.ref` is in the form of `refs/head/{name}`. This step extracts `{name}` and saves it
+    ## as an output for later use
+    - name: Extract branch name
+      id: extract-branch
+      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+      shell: bash
+
+    ## Manual version override, patch as default
+    - name: Lerna Bump
+      shell: bash
+      run: yarn bump --yes ${{inputs.version}}
+
+    ## Capture the new tag and store it for later use
+    - name: Get new tag
+      id: new-tag
+      shell: bash
+      run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+
+    ## Generate a changeset based on rules of the Canvas Kit repository
+    - name: Generate Changeset
+      uses: Workday/canvas-kit-actions/generate-changeset@v1
+      id: changeset
+      with:
+        token: ${{ inputs.gh_token }}
+        fromRef: v${{steps.previous-tag.outputs.tag}}
+        toRef: ${{steps.extract-branch.outputs.branch}}
+        tagName: v${{steps.new-tag.outputs.tag}}
+
+    ## We could have gone the route of a lerna changeset plugin, but we would lose access to
+    ## usernames which add a nice human touch to release notes
+    - name: Update Changelog
+      shell: bash
+      run: node utils/update-changelog.js
+      env:
+        CHANGESET_TITLE: ${{steps.changeset.outputs.title}}
+        CHANGESET_BODY: |
+          ${{steps.changeset.outputs.body}}
+
+    ## So far, the changes to to the workspace have not been committed. We'll commit them now and
+    ## create a tag
+    - name: Commit and add Tag
+      shell: bash
+      run: |
+        git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
+
+    - name: See git log
+      shell: bash
+      run: |
+        git log -n 1 --decorate=short
+
+    # Build Storybook and extract component stories for Storybook aggregation. This will be used
+    # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
+    # built assets mess up this command
+    - name: Build Storybook
+      shell: bash
+      run: |
+        yarn build-storybook --quiet
+        npx sb extract docs docs/stories.json
+
+    ## Build for packaging.
+    - name: Build
+      shell: bash
+      run: yarn build
+
+    # Publish to npm. Must be run after a build
+    - name: Publish
+      shell: bash
+      run:
+        yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch ==
+        'master' && 'latest' || 'support'}}
+      env:
+        NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
+
+    # Push both the commit and tag created by Lerna's version command using a PAT
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ inputs.gh_rw_token }}
+        branch: ${{ github.ref }}
+        tags: true
+
+    ## Create a release on Github. This will trigger an internal Slack message
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.gh_token }}
+      with:
+        tag_name: v${{steps.new-tag.outputs.tag}}
+        release_name: v${{steps.new-tag.outputs.tag}}
+        body: |
+          ${{steps.changeset.outputs.body}}
+        draft: false
+        prerelease: false
+
+    ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
+    - name: Publish Storybook
+      if: steps.extract-branch.outputs.branch == 'master'
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: docs
+
+    ## Create a Chromatic baseline auto-accepting changes. Chromatic changes are already accepted
+    ## in PRs, so we don't need to manually approve them here again. This new baseline will be
+    ## used for future PRs. New PRs may show extra Chromatic changes until the "Update Branch"
+    ## button is used in PRs which will pull this new baseline.
+    - name: Update Chromatic Baseline
+      uses: chromaui/action@v1
+      with:
+        token: ${{ inputs.gh_token }}
+        projectToken: ${{ inputs.chromatic_code }}
+        storybookBuildDir: docs
+        exitOnceUploaded: true
+        exitZeroOnChanges: true
+        autoAcceptChanges: true

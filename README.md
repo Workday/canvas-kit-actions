@@ -79,3 +79,23 @@ jobs:
           slackMessage: |
             Release job failed. Please check error logs.
 ```
+
+### `release`
+
+Makes release based on given version or patch as default.
+
+#### Example
+```yml
+jobs:
+  main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: Workday/canvas-kit-actions/release@v1
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          gh_rw_token: ${{ secrets.GH_RW_TOKEN }}
+          publish_token: ${{ secrets.NPM_CI_PUBLISH_TOKEN }}
+          chromatic_project_token: ${{ secrets.CHROMATIC_APP_CODE }}
+          version: 'minor'
+```
