@@ -146,7 +146,7 @@ runs:
       uses: chromaui/action@v1
       with:
         token: ${{ inputs.gh_token }}
-        projectToken: ${{ inputs.chromatic_code }}
+        projectToken: ${{ inputs.chromatic_project_token }}
         storybookBuildDir: docs
         exitOnceUploaded: true
         exitZeroOnChanges: true
