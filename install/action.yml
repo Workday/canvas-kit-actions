@@ -5,7 +5,7 @@ inputs:
   node_version:
     required: false
     description: 'Version of Node'
-    default: '14.x'
+    default: '16.x'
 
 runs:
   using: 'composite'
@@ -13,7 +13,7 @@ runs:
     ## This step installs node and sets up several matchers (regex matching for Github
     ## Annotations). See
     ## https://github.com/actions/setup-node/blob/25316bbc1f10ac9d8798711f44914b1cf3c4e954/src/main.ts#L58-L65
-    - uses: actions/setup-node@v2.4.0
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node_version }}
         registry-url: https://registry.npmjs.org
@@ -29,14 +29,14 @@ runs:
     ## folders. A cache hit will skip the cache steps
     - name: Cache node modules
       id: yarn-cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: node_modules
         key: ${{ runner.os }}-${{ inputs.node_version }}-node-modules-hash-${{ hashFiles('yarn.lock') }}
 
     - name: Cache Cypress
       id: cypress-cache
-      uses: actions/cache/@v2
+      uses: actions/cache@v3
       with:
         path: .cache/cypress
         key: ${{ runner.os }}-${{ inputs.node_version }}-cypress-cache-version-${{ steps.cypress-version.outputs.version }}
