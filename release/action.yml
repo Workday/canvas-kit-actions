@@ -119,12 +119,12 @@ runs:
 
     ## Create a release on Github. This will trigger an internal Slack message
     - name: Create Release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ inputs.gh_token }}
       with:
         tag_name: v${{steps.new-tag.outputs.tag}}
-        release_name: v${{steps.new-tag.outputs.tag}}
+        name: v${{steps.new-tag.outputs.tag}}
         body: |
           ${{steps.changeset.outputs.body}}
         draft: false
@@ -133,7 +133,7 @@ runs:
     ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
     - name: Publish Storybook
       if: steps.extract-branch.outputs.branch == 'master'
-      uses: JamesIves/github-pages-deploy-action@4.1.5
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         branch: gh-pages
         folder: docs
@@ -143,7 +143,7 @@ runs:
     ## used for future PRs. New PRs may show extra Chromatic changes until the "Update Branch"
     ## button is used in PRs which will pull this new baseline.
     - name: Update Chromatic Baseline
-      uses: chromaui/action@v1
+      uses: chromaui/action@main
       with:
         token: ${{ inputs.gh_token }}
         projectToken: ${{ inputs.chromatic_project_token }}
