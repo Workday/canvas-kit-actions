@@ -133,7 +133,7 @@ runs:
     ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
     - name: Publish Storybook
       if: steps.extract-branch.outputs.branch == 'master'
-      uses: JamesIves/github-pages-deploy-action@4.4.1
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
         branch: gh-pages
         folder: docs
