@@ -43,6 +43,11 @@ runs:
       run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
       shell: bash
 
+    - name: Validate branch name
+      if: steps.extract-branch.outputs.branch != "support" && steps.extract-branch.outputs.branch != "master"
+      run: echo "Release can be run only on support or master branches" && exit 1
+      shell: bash
+
     ## Manual version override, patch as default
     - name: Lerna Bump
       shell: bash
@@ -100,15 +105,6 @@ runs:
       shell: bash
       run: yarn build
 
-    # Publish to npm. Must be run after a build
-    - name: Publish
-      shell: bash
-      run:
-        yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch ==
-        'master' && 'latest' || 'support'}}
-      env:
-        NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
-
     # Push both the commit and tag created by Lerna's version command using a PAT
     - name: Push changes
       uses: ad-m/github-push-action@master
@@ -129,6 +125,14 @@ runs:
           ${{steps.changeset.outputs.body}}
         draft: false
         prerelease: false
+
+    # Publish to npm. Must be run after a build
+    - name: Publish
+      shell: bash
+      run:
+        yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
+      env:
+        NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
 
     ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
     - name: Publish Storybook
