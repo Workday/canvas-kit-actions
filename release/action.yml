@@ -44,7 +44,7 @@ runs:
       shell: bash
 
     - name: Validate branch name
-      if: steps.extract-branch.outputs.branch != "support" && steps.extract-branch.outputs.branch != "master"
+      if: steps.extract-branch.outputs.branch != 'support' && steps.extract-branch.outputs.branch != 'master'
       run: echo "Release can be run only on support or master branches" && exit 1
       shell: bash
 
