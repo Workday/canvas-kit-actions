@@ -126,13 +126,12 @@ runs:
         draft: false
         prerelease: false
 
-    # # Publish to npm. Must be run after a build
-    # - name: Publish
-    #   shell: bash
-    #   run:
-    #     yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
-    #   env:
-    #     NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
+    # Publish to npm. Must be run after a build
+    - name: Publish
+      shell: bash
+      run: yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
+      env:
+        NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
 
     ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
     - name: Publish Storybook
