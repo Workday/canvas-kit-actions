@@ -16,11 +16,11 @@ inputs:
     description: 'Chromatic project token to deploy a storybook.'
   version:
     required: false
-    description: 'The version override (example: "8.1.2"). Leave blank if you want to make patch release.'
+    description: 'The package version override (example: "8.1.2"). Leave blank if you want to make patch release.'
     default: 'patch'
   toRef:
     required: false
-    description: 'The latest point for the changelog generation to overwrite default value as a current branch name. Can be branch name or tag.'
+    description: 'Git ref that marks the end of changelog generation comparison to overwrite default value. Tag, SHA, or branch'
 
 runs:
   using: 'composite'
