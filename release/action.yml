@@ -33,11 +33,11 @@ runs:
         git config --global user.name "${{ github.actor }}"
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-    # ## Capture the previous tag and store it for later use
-    # - name: Get previous tag
-    #   id: previous-tag
-    #   run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
-    #   shell: bash
+    ## Capture the previous tag and store it for later use
+    - name: Get previous tag
+      id: previous-tag
+      run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+      shell: bash
 
     ## `github.ref` is in the form of `refs/head/{name}`. This step extracts `{name}` and saves it
     ## as an output for later use
@@ -46,15 +46,15 @@ runs:
       run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
       shell: bash
 
-    # - name: Validate branch name
-    #   if: steps.extract-branch.outputs.branch != 'support' && steps.extract-branch.outputs.branch != 'master'
-    #   run: echo "Release can be run only on support or master branches" && exit 1
-    #   shell: bash
+    - name: Validate branch name
+      if: steps.extract-branch.outputs.branch != 'support' && steps.extract-branch.outputs.branch != 'master'
+      run: echo "Release can be run only on support or master branches" && exit 1
+      shell: bash
 
-    # ## Manual version override, patch as default
-    # - name: Lerna Bump
-    #   shell: bash
-    #   run: yarn bump --yes ${{inputs.version}}
+    ## Manual version override, patch as default
+    - name: Lerna Bump
+      shell: bash
+      run: yarn bump --yes ${{inputs.version}}
 
     ## Capture the new tag and store it for later use
     - name: Get new tag
@@ -62,37 +62,37 @@ runs:
       shell: bash
       run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
 
-    # ## Generate a changeset based on rules of the Canvas Kit repository
-    # - name: Generate Changeset
-    #   uses: Workday/canvas-kit-actions/generate-changeset@v1
-    #   id: changeset
-    #   with:
-    #     token: ${{ inputs.gh_token }}
-    #     fromRef: v${{steps.previous-tag.outputs.tag}}
-    #     toRef: ${{ inputs.toRef || steps.extract-branch.outputs.branch}}
-    #     tagName: v${{steps.new-tag.outputs.tag}}
+    ## Generate a changeset based on rules of the Canvas Kit repository
+    - name: Generate Changeset
+      uses: Workday/canvas-kit-actions/generate-changeset@v1
+      id: changeset
+      with:
+        token: ${{ inputs.gh_token }}
+        fromRef: v${{steps.previous-tag.outputs.tag}}
+        toRef: ${{ inputs.toRef || steps.extract-branch.outputs.branch}}
+        tagName: v${{steps.new-tag.outputs.tag}}
 
-    # ## We could have gone the route of a lerna changeset plugin, but we would lose access to
-    # ## usernames which add a nice human touch to release notes
-    # - name: Update Changelog
-    #   shell: bash
-    #   run: node utils/update-changelog.js
-    #   env:
-    #     CHANGESET_TITLE: ${{steps.changeset.outputs.title}}
-    #     CHANGESET_BODY: |
-    #       ${{steps.changeset.outputs.body}}
+    ## We could have gone the route of a lerna changeset plugin, but we would lose access to
+    ## usernames which add a nice human touch to release notes
+    - name: Update Changelog
+      shell: bash
+      run: node utils/update-changelog.js
+      env:
+        CHANGESET_TITLE: ${{steps.changeset.outputs.title}}
+        CHANGESET_BODY: |
+          ${{steps.changeset.outputs.body}}
 
-    # ## So far, the changes to to the workspace have not been committed. We'll commit them now and
-    # ## create a tag
-    # - name: Commit and add Tag
-    #   shell: bash
-    #   run: |
-    #     git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
+    ## So far, the changes to to the workspace have not been committed. We'll commit them now and
+    ## create a tag
+    - name: Commit and add Tag
+      shell: bash
+      run: |
+        git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
 
-    # - name: See git log
-    #   shell: bash
-    #   run: |
-    #     git log -n 1 --decorate=short
+    - name: See git log
+      shell: bash
+      run: |
+        git log -n 1 --decorate=short
 
     # Build Storybook and extract component stories for Storybook aggregation. This will be used
     # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
@@ -108,26 +108,26 @@ runs:
       shell: bash
       run: yarn build
 
-    # # Push both the commit and tag created by Lerna's version command using a PAT
-    # - name: Push changes
-    #   uses: ad-m/github-push-action@master
-    #   with:
-    #     github_token: ${{ inputs.gh_rw_token }}
-    #     branch: ${{ github.ref }}
-    #     tags: true
+    # Push both the commit and tag created by Lerna's version command using a PAT
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ inputs.gh_rw_token }}
+        branch: ${{ github.ref }}
+        tags: true
 
-    # ## Create a release on Github. This will trigger an internal Slack message
-    # - name: Create Release
-    #   uses: softprops/action-gh-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ inputs.gh_token }}
-    #   with:
-    #     tag_name: v${{steps.new-tag.outputs.tag}}
-    #     name: v${{steps.new-tag.outputs.tag}}
-    #     body: |
-    #       ${{steps.changeset.outputs.body}}
-    #     draft: false
-    #     prerelease: false
+    ## Create a release on Github. This will trigger an internal Slack message
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.gh_token }}
+      with:
+        tag_name: v${{steps.new-tag.outputs.tag}}
+        name: v${{steps.new-tag.outputs.tag}}
+        body: |
+          ${{steps.changeset.outputs.body}}
+        draft: false
+        prerelease: false
 
     # Publish to npm. Must be run after a build
     - name: Publish
