@@ -25,13 +25,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    # ## A `yarn bump` will create a commit and a tag. We need to set up the git user to do this.
-    # ## We'll make that user be the github-actions user.
-    # - name: Config git user
-    #   shell: bash
-    #   run: |
-    #     git config --global user.name "${{ github.actor }}"
-    #     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+    ## A `yarn bump` will create a commit and a tag. We need to set up the git user to do this.
+    ## We'll make that user be the github-actions user.
+    - name: Config git user
+      shell: bash
+      run: |
+        git config --global user.name "${{ github.actor }}"
+        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
     # ## Capture the previous tag and store it for later use
     # - name: Get previous tag
@@ -56,11 +56,11 @@ runs:
     #   shell: bash
     #   run: yarn bump --yes ${{inputs.version}}
 
-    # ## Capture the new tag and store it for later use
-    # - name: Get new tag
-    #   id: new-tag
-    #   shell: bash
-    #   run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+    ## Capture the new tag and store it for later use
+    - name: Get new tag
+      id: new-tag
+      shell: bash
+      run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
 
     # ## Generate a changeset based on rules of the Canvas Kit repository
     # - name: Generate Changeset
@@ -94,19 +94,19 @@ runs:
     #   run: |
     #     git log -n 1 --decorate=short
 
-    # # Build Storybook and extract component stories for Storybook aggregation. This will be used
-    # # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
-    # # built assets mess up this command
-    # - name: Build Storybook
-    #   shell: bash
-    #   run: |
-    #     yarn build-storybook --quiet
-    #     npx sb extract docs docs/stories.json
+    # Build Storybook and extract component stories for Storybook aggregation. This will be used
+    # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
+    # built assets mess up this command
+    - name: Build Storybook
+      shell: bash
+      run: |
+        yarn build-storybook --quiet
+        npx sb extract docs docs/stories.json
 
-    # ## Build for packaging.
-    # - name: Build
-    #   shell: bash
-    #   run: yarn build
+    ## Build for packaging.
+    - name: Build
+      shell: bash
+      run: yarn build
 
     # # Push both the commit and tag created by Lerna's version command using a PAT
     # - name: Push changes
