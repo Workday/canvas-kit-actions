@@ -39,12 +39,12 @@ runs:
     #   run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
     #   shell: bash
 
-    # ## `github.ref` is in the form of `refs/head/{name}`. This step extracts `{name}` and saves it
-    # ## as an output for later use
-    # - name: Extract branch name
-    #   id: extract-branch
-    #   run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
-    #   shell: bash
+    ## `github.ref` is in the form of `refs/head/{name}`. This step extracts `{name}` and saves it
+    ## as an output for later use
+    - name: Extract branch name
+      id: extract-branch
+      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+      shell: bash
 
     # - name: Validate branch name
     #   if: steps.extract-branch.outputs.branch != 'support' && steps.extract-branch.outputs.branch != 'master'
