@@ -20,7 +20,7 @@ inputs:
     default: 'patch'
   toRef:
     required: false
-    description: 'The latest point for the changelog generation to overide default value as a current branch name. Can be branch name or tag.'
+    description: 'The latest point for the changelog generation to overwrite default value as a current branch name. Can be branch name or tag.'
 
 runs:
   using: 'composite'
