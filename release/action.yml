@@ -16,8 +16,11 @@ inputs:
     description: 'Chromatic project token to deploy a storybook.'
   version:
     required: false
-    description: 'The version override (example: "8.1.2"). Leave blank if you want to make patch release.'
+    description: 'The package version override (example: "8.1.2"). Leave blank if you want to make patch release.'
     default: 'patch'
+  toRef:
+    required: false
+    description: 'Git ref that marks the end of changelog generation comparison to overwrite default value. Tag, SHA, or branch'
 
 runs:
   using: 'composite'
@@ -66,7 +69,7 @@ runs:
       with:
         token: ${{ inputs.gh_token }}
         fromRef: v${{steps.previous-tag.outputs.tag}}
-        toRef: ${{steps.extract-branch.outputs.branch}}
+        toRef: ${{ inputs.toRef || steps.extract-branch.outputs.branch}}
         tagName: v${{steps.new-tag.outputs.tag}}
 
     ## We could have gone the route of a lerna changeset plugin, but we would lose access to
