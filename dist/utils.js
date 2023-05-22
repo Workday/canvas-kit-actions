@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getChangelogEntry = exports.getReleaseNotes = exports.getReleaseTitle = exports.getDate = exports.getReleaseCommitTitle = exports.getCommitParts = exports.getSections = exports.verifyPullRequest = exports.getMergeData = exports.mergeAuthors = exports.getCommitBody = void 0;
+exports.getNextBranch = exports.getChangelogEntry = exports.getReleaseNotes = exports.getReleaseTitle = exports.getDate = exports.getReleaseCommitTitle = exports.getCommitParts = exports.getSections = exports.verifyPullRequest = exports.getMergeData = exports.mergeAuthors = exports.getCommitBody = void 0;
 /**
  * Creates a commit message out of Sections. This commit message will be processed later for
  * changelog and release note.
@@ -404,3 +404,16 @@ function getChangelogEntry(owner, repo, commits, tagName) {
     return `${title}\n\n${body}`;
 }
 exports.getChangelogEntry = getChangelogEntry;
+function getNextBranch(branch) {
+    switch (branch) {
+        case 'support':
+            return 'master';
+        case 'master':
+            return 'prerelease/minor';
+        case 'prerelease/minor':
+            return 'prerelease/major';
+        default:
+            throw Error(`Could not determine a forward merge branch for "${branch}". Supported branch inputs are support, master, and prerelease/minor`);
+    }
+}
+exports.getNextBranch = getNextBranch;
