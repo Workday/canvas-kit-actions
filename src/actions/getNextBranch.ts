@@ -2,7 +2,7 @@ import {actionsCore as core, actionsGithub as github} from '../lib'
 import {getNextBranch} from '../utils'
 
 async function run() {
-  const branch = core.getInput('branch') || github.context.ref
+  const branch = core.getInput('branch') || github.context.ref.replace('refs/heads/', '')
 
   core.setOutput('branch', getNextBranch(branch))
 }
