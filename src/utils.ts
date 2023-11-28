@@ -485,7 +485,7 @@ export function getChangelogEntry(owner: string, repo: string, commits: Commits,
   return `${title}\n\n${body}`
 }
 
-export function getNextBranch(branch: string = '', mainBranch: string) {
+export function getNextBranch(branch: string, mainBranch: string) {
   switch (branch) {
     case 'support':
       return mainBranch
