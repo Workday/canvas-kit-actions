@@ -1,0 +1,13 @@
+name: 'Forward Merge'
+description: ''
+author: 'Workday'
+inputs:
+  branch:
+    required: true
+    description: 'Source Branch'
+  nextBranch:
+    required: true
+    description: 'Branch name to merge'
+runs:
+  using: 'node16'
+  main: '../dist/actions/forwardMerge.js'
