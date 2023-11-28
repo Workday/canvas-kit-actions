@@ -485,11 +485,11 @@ export function getChangelogEntry(owner: string, repo: string, commits: Commits,
   return `${title}\n\n${body}`
 }
 
-export function getNextBranch(branch: string) {
+export function getNextBranch(branch: string = '') {
   switch (branch) {
     case 'support':
       return 'master'
-    case 'master':
+    case branch.match(/^(master|main)$/)?.input:
       return 'prerelease/minor'
     case 'prerelease/minor':
       return 'prerelease/major'
