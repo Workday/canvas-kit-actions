@@ -5,7 +5,8 @@ inputs:
   branch:
     description: 'The current branch name. If not provided, it will default to the current ref provided by the Github Action (whatever ref triggered the job)'
   mainBranch:
-    description: 'The main branch name for your repo (master, main, etc)'
+    description: 'The main branch name for your repo (master, main, etc). It's master by default'
+    default: 'master'
 outputs:
   branch:
     description: 'The next branch name'
