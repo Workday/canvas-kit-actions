@@ -51,9 +51,13 @@ export function verifyPullRequest(prData: GetPullRequest): false | string {
   if (headRefName?.startsWith('merge/')) {
     return false
   }
-
+  console.log('headRefName>>>>>>', headRefName)
   // Dependabot pull requests
   if (headRefName?.includes('dependabot/')) {
+    return false
+  }
+
+  if (headRefName?.includes('snyk/')) {
     return false
   }
 
