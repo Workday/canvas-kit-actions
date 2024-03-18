@@ -57,7 +57,7 @@ export function verifyPullRequest(prData: GetPullRequest): false | string {
     return false
   }
 
-  if (headRefName?.includes('snyk/')) {
+  if (headRefName?.includes('snyk')) {
     return false
   }
 
