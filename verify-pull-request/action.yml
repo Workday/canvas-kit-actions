@@ -10,4 +10,4 @@ inputs:
     description: 'Optional manual override of a pull request number. Useful for workflow dispatch jobs.'
 runs:
   using: 'node12'
-  main: '../actions/verifyPullRequest.js'
+  main: '../src/actions/verifyPullRequest.js'
