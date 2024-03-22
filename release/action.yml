@@ -98,7 +98,7 @@ runs:
       shell: bash
       run: |
         yarn build-storybook --quiet
-        npx sb extract docs docs/stories.json
+        npx sb@6.5.9 extract docs docs/stories.json
 
     ## Build for packaging.
     - name: Build
