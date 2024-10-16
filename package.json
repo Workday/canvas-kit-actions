@@ -48,5 +48,8 @@
     "ts-graphql-plugin": "^2.1.4",
     "ts-jest": "^27.0.5",
     "typescript": "^4.4.3"
+  }, 
+  "resolutions": {
+    "puppeteer-core": "^13.7.0"
   }
 }
