@@ -29,7 +29,7 @@ inputs:
     required: false
     description: 'Optional manual override of a pull request number. Useful for workflow dispatch jobs.'
 runs:
-  using: 'node16'
+  using: 'node18'
   main: '../dist/actions/verifyPullRequest.js'
 ```
 

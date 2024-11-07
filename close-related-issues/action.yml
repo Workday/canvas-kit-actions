@@ -6,5 +6,5 @@ inputs:
     required: true
     description: 'A github token with at least read access to the repository'
 runs:
-  using: 'node16'
+  using: 'node18'
   main: '../dist/actions/closeRelatedIssues.js'
