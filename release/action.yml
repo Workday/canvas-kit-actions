@@ -107,6 +107,8 @@ runs:
     - name: Build
       shell: bash
       run: yarn build
+      env:
+          TSP_SKIP_CACHE: true
 
     # Push both the commit and tag created by Lerna's version command using a PAT
     - name: Push changes
