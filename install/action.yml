@@ -41,6 +41,12 @@ runs:
     #     path: .cache/cypress
     #     key: ${{ runner.os }}-${{ inputs.node_version }}-cypress-cache-version-${{ steps.cypress-version.outputs.version }}
 
+    - name: Remove ts-patch cache
+      run: rm -rf node_modules/.cache/ts-patch
+
+    - name: Install ts-patch
+      run: TS_PATCH_DISABLE_CACHE=1 yarn add ts-patch
+
     ## If both `node_modules` and `.cache/cypress` were cache hits, we're going to skip the `yarn
     ## install` step. This effectively saves up to 3m on a cache hit build.
     - name: Install Packages
