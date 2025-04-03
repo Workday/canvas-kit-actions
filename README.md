@@ -109,25 +109,25 @@ This GitHub Action automates the release or prerelease process, supporting versi
 
 #### Inputs
 
-| Input Name            | Required | Default                                                | Description                                                                                   |
-| --------------------- | -------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| `buildScript`         | ❌ No    | `yarn build`                                           | Command to build the package before release. Defaults to `yarn build`.                        |
-| `changelog`           | ❌ No    | `""`                                                   | Text for the changelog to include in the release.                                             |
-| `commitScript`        | ❌ No    | `"chore: Release <package> v<version> [skip release]"` | Command to commit version changes and changelog updates.                                      |
-| `ghToken`             | ✅ Yes   | N/A                                                    | GitHub token with read/write permissions for release operations.                              |
-| `package`             | ✅ Yes   | N/A                                                    | The package name for correct versioning.                                                      |
-| `packagePath`         | ✅ Yes   | N/A                                                    | Path to the package folder.                                                                   |
-| `preid`               | ❌ No    | N/A                                                    | Identifier for a prerelease version (e.g., `beta`, `rc`). Required if `prerelease` is `true`. |
-| `prerelease`          | ❌ No    | `false`                                                | Flag to indicate a prerelease. If `true`, `preid` must be provided.                           |
-| `releaseScript`       | ❌ No    | `npx changeset publish`                                | Command to publish the package. Defaults to `npx changeset publish`.                          |
-| `releasePrivate`      | ❌ No    | `true`                                                 | Temporarily makes private packages public for release and then restores privacy.              |
-| `skipCreateChangelog` | ❌ No    | `true`                                                 | If `true`, changelog creation is skipped.                                                     |
-| `skipCreateTag`       | ❌ No    | `true`                                                 | If `true`, the git tag creation (`package@version`) is skipped.                               |
-| `skipGheRelease`      | ❌ No    | `false`                                                | If `true`, skips creating a GitHub release.                                                   |
-| `skipPush`            | ❌ No    | `false`                                                | If `true`, skips pushing commits and tags to the origin branch.                               |
-| `skipTagsPush`        | ❌ No    | `false`                                                | If `true`, skips pushing git tags to the origin branch.                                       |
-| `version`             | ✅ Yes   | N/A                                                    | Specifies the version type: `patch`, `minor`, or `major`.                                     |
-| `versionScript`       | ❌ No    | `npx changeset version`                                | Command to bump the version of the package. Defaults to `npx changeset version`.              |
+| Input Name            | Required | Default                 | Description                                                                                                                                                                     |
+| --------------------- | -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `buildScript`         | ❌ No    | `yarn build`            | Command to build the package before release. Defaults to `yarn build`.                                                                                                          |
+| `changelog`           | ❌ No    | `""`                    | Text for the changelog to include in the release.                                                                                                                               |
+| `commitScript`        | ❌ No    | N/A                     | Command to commit version changes and changelog updates. If not provided commit will be released with the next message: `"chore: Release <package> v<version> [skip release]"`' |
+| `ghToken`             | ✅ Yes   | N/A                     | GitHub token with read/write permissions for release operations.                                                                                                                |
+| `package`             | ✅ Yes   | N/A                     | The package name for correct versioning.                                                                                                                                        |
+| `packagePath`         | ✅ Yes   | N/A                     | Path to the package folder.                                                                                                                                                     |
+| `preid`               | ❌ No    | N/A                     | Identifier for a prerelease version (e.g., `beta`, `rc`). Required if `prerelease` is `true`.                                                                                   |
+| `prerelease`          | ❌ No    | `false`                 | Flag to indicate a prerelease. If `true`, `preid` must be provided.                                                                                                             |
+| `releaseScript`       | ❌ No    | `npx changeset publish` | Command to publish the package. Defaults to `npx changeset publish`.                                                                                                            |
+| `releasePrivate`      | ❌ No    | `true`                  | Temporarily makes private packages public for release and then restores privacy.                                                                                                |
+| `skipCreateChangelog` | ❌ No    | N/A                     | If `true`, changelog creation is skipped.                                                                                                                                       |
+| `skipCreateTag`       | ❌ No    | `true`                  | If `true`, the git tag creation (`package@version`) is skipped.                                                                                                                 |
+| `skipGithubRelease`   | ❌ No    | N/A                     | If `true`, skips creating a GitHub release.                                                                                                                                     |
+| `skipPush`            | ❌ No    | N/A                     | If `true`, skips pushing commits and tags to the origin branch.                                                                                                                 |
+| `skipTagsPush`        | ❌ No    | N/A                     | If `true`, skips pushing git tags to the origin branch.                                                                                                                         |
+| `version`             | ✅ Yes   | N/A                     | Specifies the version type: `patch`, `minor`, or `major`.                                                                                                                       |
+| `versionScript`       | ❌ No    | `npx changeset version` | Command to bump the version of the package. Defaults to `npx changeset version`.                                                                                                |
 
 #### Outputs
 

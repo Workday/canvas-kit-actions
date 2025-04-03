@@ -35,15 +35,14 @@ inputs:
   releasePrivate:
     required: false
     default: true
-    description: 'Flag to make the private packages public for release and back to private after. Default to `true`.'
+    description: 'Temporarily makes private packages public for release and then restores privacy.'
   skipCreateChangelog:
     required: false
-    default: true
-    description: 'Create changelog if set to `true`. Skipped if set to false. Defaults to `true`.'
+    description: 'If set to`true`, changelog creation is skipped.'
   skipCreateTag:
     required: false
     default: true
-    description: 'Create git tag in the `package@version` format if set to `true`. Skipped if set to false. Defaults to `true`.'
+    description: 'Create git tag in the `package@version` format if set to `true`. Skipped if set to false. Defaults to `true`. Changeset is auto create tag.'
   skipGithubRelease:
     required: false
     description: 'Skip Github release if set to `true`.'
