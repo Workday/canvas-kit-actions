@@ -101,7 +101,7 @@ jobs:
           version: 'minor'
 ```
 
-### Release Action
+### Do Release Action
 
 #### Purpose
 
@@ -129,15 +129,15 @@ This GitHub Action automates the release or prerelease process, supporting versi
 | `version`             | ✅ Yes   | N/A                                                    | Specifies the version type: `patch`, `minor`, or `major`.                                     |
 | `versionScript`       | ❌ No    | `npx changeset version`                                | Command to bump the version of the package. Defaults to `npx changeset version`.              |
 
-## Outputs
+#### Outputs
 
 | Output Name       | Description                  |
 | ----------------- | ---------------------------- |
 | `releasedVersion` | The released version number. |
 
-## Usage
+#### Usage
 
-### **Standard Release**
+**Standard Release**
 
 ```yaml
 jobs:
@@ -162,7 +162,7 @@ jobs:
           skipGheRelease: true
 ```
 
-### **Prerelease (Beta)**
+**Prerelease (Beta)**
 
 ```yaml
 jobs:
