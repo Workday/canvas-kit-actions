@@ -101,7 +101,7 @@ jobs:
           version: 'minor'
 ```
 
-### Do Release Action
+### `do-release`
 
 #### Purpose
 
