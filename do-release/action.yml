@@ -1,0 +1,151 @@
+name: 'Release'
+description: 'Action to do release or prerelease. By default this release action rely on changeset, but all scripts can be modified to use any other tool.'
+author: 'Workday'
+inputs:
+  buildScript:
+    required: false
+    description: 'Command to build the package before release. Defaults to `yarn build`.'
+    default: 'yarn build'
+  changelog:
+    required: false
+    description: 'Text for the changelog to include in the release.'
+    default: ''
+  commitScript:
+    required: false
+    description: 'Command to commit changes, typically used for committing version bumps or changelogs. If no provided commit will be released with the next message: `"chore: Release <package> v<version> [skip release]"`'
+  ghToken:
+    required: true
+    description: 'GitHub token with read/write permissions for release operations.'
+  package:
+    required: true
+    description: 'The package name for correct versioning.'
+  packagePath:
+    required: true
+    description: 'Path to the folder of the package to be released.'
+  preid:
+    required: false
+    description: 'Preid to specify a prerelease version tag.'
+  prerelease:
+    required: false
+    description: 'Flag to indicate whether this is a prerelease. If `true`, `preid` and `version` must be specified for prerelease.'
+  releaseScript:
+    required: false
+    default: 'npx changeset publish'
+    description: 'Command to perform the release action, such as deploying or publishing the package. Default to `npx changeset publish`.'
+  releasePrivate:
+    required: false
+    default: true
+    description: 'Flag to make the private packages public for release and back to private after. Default to `true`.'
+  skipCreateChangelog:
+    required: false
+    default: true
+    description: 'Create changelog if set to `true`. Skipped if set to false. Defaults to `true`.'
+  skipCreateTag:
+    required: false
+    default: true
+    description: 'Create git tag in the `package@version` format if set to `true`. Skipped if set to false. Defaults to `true`.'
+  skipGithubRelease:
+    required: false
+    description: 'Skip Github release if set to `true`.'
+  skipPush:
+    required: false
+    description: 'Skip git push of the created commit and tag to the origin branch if set to `true`.'
+  skipTagsPush:
+    required: false
+    description: 'Skip git push of the created tags to the origin branch if set to `true`.'
+  version:
+    required: true
+    description: 'The version to specify for the prerelease: patch, minor or major.'
+  versionScript:
+    required: false
+    description: 'Command to bump the version of the package. Defaults to `npx changeset version`.'
+    default: 'npx changeset version'
+
+outputs:
+  releasedVersion:
+    description: 'The released version number.'
+    value: ${{ steps.get_version.outputs.version }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Enter pre mode
+      if: ${{ inputs.prerelease == 'true' }}
+      shell: bash
+      run: npx changeset pre enter ${{ inputs.preid }}
+
+    - name: Generate pre-changelog
+      if: ${{ contains(inputs.versionScript, 'changeset') && inputs.skipCreateChangelog != 'true' }}
+      shell: bash
+      run: "echo \"---\n'${{ inputs.package }}': ${{ inputs.version }}\n---\n${{ inputs.changelog }}\" > .changeset/pre-changelog.md"
+
+    - name: Bump version
+      shell: bash
+      run: ${{ inputs.versionScript }}
+
+    - name: Get package.json path
+      id: get_path
+      shell: bash
+      run: echo "path=${{ inputs.packagePath }}/package.json" >> "$GITHUB_OUTPUT"
+
+    - name: Get version from package.json
+      id: get_version
+      shell: bash
+      run: echo "version=$(jq -r '.version' ${{ steps.get_path.outputs.path }})" >> "$GITHUB_OUTPUT"
+
+    - name: Make package public to release
+      if: ${{ inputs.releasePrivate == 'true' }}
+      shell: bash
+      run: |
+        jq '.private = false' ${{ steps.get_path.outputs.path }} > package.tmp.json && mv package.tmp.json ${{ steps.get_path.outputs.path }}
+
+    - name: Build new package
+      if: ${{ inputs.buildScript }}
+      shell: bash
+      run: ${{ inputs.buildScript }}
+
+    - name: Release
+      shell: bash
+      run: ${{ inputs.releaseScript }}
+
+    - name: Make package private after release
+      if: ${{ inputs.releasePrivate == 'true' }}
+      shell: bash
+      run: |
+        jq '.private = true' ${{ steps.get_path.outputs.path }} > package.tmp.json && mv package.tmp.json ${{ steps.get_path.outputs.path }}
+
+    - name: Create tag
+      id: create_tag
+      shell: bash
+      run: echo "tag=${{ inputs.package }}@${{ steps.get_version.outputs.version }}" >> "$GITHUB_OUTPUT"
+
+    - name: Commit changes
+      if: ${{ !inputs.commitScript }}
+      shell: bash
+      run: |
+        git add ${{ inputs.packagePath }}
+        git commit -m "chore: Release ${{ inputs.package }} v${{ steps.get_version.outputs.version }} [ci skip]"
+
+    - name: Create git release tag
+      if: ${{ inputs.skipCreateTag != 'true' }}
+      shell: bash
+      run: git tag -a ${{ steps.create_tag.outputs.tag }} -m "${{ steps.create_tag.outputs.tag }}"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ inputs.ghToken }}
+        branch: ${{ github.ref }}
+        tags: ${{ inputs.skipTagsPush != 'true' }}
+
+    - name: Create Github Release
+      if: ${{ inputs.skipGithubRelease != 'true' }}
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.ghToken }}
+      with:
+        tag_name: ${{steps.create_tag.outputs.tag}}
+        name: ${{steps.create_tag.outputs.tag}}
+        body: ${{ inputs.changelog }}
+        draft: false
+        prerelease: ${{ inputs.prerelease }}

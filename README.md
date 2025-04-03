@@ -85,6 +85,7 @@ jobs:
 Makes release based on given version or patch as default.
 
 #### Example
+
 ```yml
 jobs:
   main:
@@ -99,3 +100,98 @@ jobs:
           chromatic_project_token: ${{ secrets.CHROMATIC_APP_CODE }}
           version: 'minor'
 ```
+
+### Release Action
+
+#### Purpose
+
+This GitHub Action automates the release or prerelease process, supporting version bumping, changelog attachment, and publishing. It integrates with **changeset** by default but can be modified to work with other tools.
+
+#### Inputs
+
+| Input Name            | Required | Default                                                | Description                                                                                   |
+| --------------------- | -------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `buildScript`         | ❌ No    | `yarn build`                                           | Command to build the package before release. Defaults to `yarn build`.                        |
+| `changelog`           | ❌ No    | `""`                                                   | Text for the changelog to include in the release.                                             |
+| `commitScript`        | ❌ No    | `"chore: Release <package> v<version> [skip release]"` | Command to commit version changes and changelog updates.                                      |
+| `ghToken`             | ✅ Yes   | N/A                                                    | GitHub token with read/write permissions for release operations.                              |
+| `package`             | ✅ Yes   | N/A                                                    | The package name for correct versioning.                                                      |
+| `packagePath`         | ✅ Yes   | N/A                                                    | Path to the package folder.                                                                   |
+| `preid`               | ❌ No    | N/A                                                    | Identifier for a prerelease version (e.g., `beta`, `rc`). Required if `prerelease` is `true`. |
+| `prerelease`          | ❌ No    | `false`                                                | Flag to indicate a prerelease. If `true`, `preid` must be provided.                           |
+| `releaseScript`       | ❌ No    | `npx changeset publish`                                | Command to publish the package. Defaults to `npx changeset publish`.                          |
+| `releasePrivate`      | ❌ No    | `true`                                                 | Temporarily makes private packages public for release and then restores privacy.              |
+| `skipCreateChangelog` | ❌ No    | `true`                                                 | If `true`, changelog creation is skipped.                                                     |
+| `skipCreateTag`       | ❌ No    | `true`                                                 | If `true`, the git tag creation (`package@version`) is skipped.                               |
+| `skipGheRelease`      | ❌ No    | `false`                                                | If `true`, skips creating a GitHub release.                                                   |
+| `skipPush`            | ❌ No    | `false`                                                | If `true`, skips pushing commits and tags to the origin branch.                               |
+| `skipTagsPush`        | ❌ No    | `false`                                                | If `true`, skips pushing git tags to the origin branch.                                       |
+| `version`             | ✅ Yes   | N/A                                                    | Specifies the version type: `patch`, `minor`, or `major`.                                     |
+| `versionScript`       | ❌ No    | `npx changeset version`                                | Command to bump the version of the package. Defaults to `npx changeset version`.              |
+
+## Outputs
+
+| Output Name       | Description                  |
+| ----------------- | ---------------------------- |
+| `releasedVersion` | The released version number. |
+
+## Usage
+
+### **Standard Release**
+
+```yaml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Release package
+        uses: Workday/canvas-kit-actions/do-release@v1
+        with:
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
+          version: 'minor'
+          package: 'my-package'
+          packagePath: 'packages/my-package'
+          buildScript: 'yarn build'
+          commitScript: 'git commit -am "chore: Release minor version"'
+          releaseScript: 'yarn release'
+          versionScript: 'npx changeset version'
+          skipCreateTag: true
+          skipGheRelease: true
+```
+
+### **Prerelease (Beta)**
+
+```yaml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Beta Release
+        uses: Workday/canvas-kit-actions/do-release@v1
+        with:
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
+          version: 'minor'
+          package: 'my-package'
+          packagePath: 'packages/my-package'
+          prerelease: true
+          preid: 'beta'
+          buildScript: 'yarn build'
+          commitScript: 'git commit -am "chore: Release beta version"'
+          releaseScript: 'yarn release'
+          versionScript: 'npx changeset version'
+          skipGheRelease: true
+```
+
+#### Notes
+
+- Ensure `ghToken` has **read/write** permissions to perform release operations.
+- The action supports both **standard releases** and **prereleases**. When `prerelease` is set to `true`, a `preid` and `version` (e.g., `beta`, `rc`) are required.
+- Default scripts use **changeset** commands, but they can be overridden to fit different workflows.
+- If using **npm** instead of **yarn**, update the `buildScript` accordingly (e.g., `npm run build`).
+- Tags are created in the format: `package@version` unless `skipCreateTag` is set to `true`.
