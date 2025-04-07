@@ -105,29 +105,29 @@ jobs:
 
 #### Purpose
 
-This GitHub Action automates the release or prerelease process, supporting version bumping, changelog attachment, and publishing. It integrates with **changeset** by default but can be modified to work with other tools.
+This GitHub Action automates the release or prerelease process, supporting version bumping, changelog attachment, and publishing. It integrates with **changeset** by default but can be customized for other workflows.
 
 #### Inputs
 
-| Input Name            | Required | Default                 | Description                                                                                                                                                                     |
-| --------------------- | -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `buildScript`         | ❌ No    | `yarn build`            | Command to build the package before release. Defaults to `yarn build`.                                                                                                          |
-| `changelog`           | ❌ No    | `""`                    | Text for the changelog to include in the release.                                                                                                                               |
-| `commitScript`        | ❌ No    | N/A                     | Command to commit version changes and changelog updates. If not provided commit will be released with the next message: `"chore: Release <package> v<version> [skip release]"`' |
-| `ghToken`             | ✅ Yes   | N/A                     | GitHub token with read/write permissions for release operations.                                                                                                                |
-| `package`             | ✅ Yes   | N/A                     | The package name for correct versioning.                                                                                                                                        |
-| `packagePath`         | ✅ Yes   | N/A                     | Path to the package folder.                                                                                                                                                     |
-| `preid`               | ❌ No    | N/A                     | Identifier for a prerelease version (e.g., `beta`, `rc`). Required if `prerelease` is `true`.                                                                                   |
-| `prerelease`          | ❌ No    | `false`                 | Flag to indicate a prerelease. If `true`, `preid` must be provided.                                                                                                             |
-| `releaseScript`       | ❌ No    | `npx changeset publish` | Command to publish the package. Defaults to `npx changeset publish`.                                                                                                            |
-| `releasePrivate`      | ❌ No    | `true`                  | Temporarily makes private packages public for release and then restores privacy.                                                                                                |
-| `skipCreateChangelog` | ❌ No    | N/A                     | If `true`, changelog creation is skipped.                                                                                                                                       |
-| `skipCreateTag`       | ❌ No    | `true`                  | If `true`, the git tag creation (`package@version`) is skipped.                                                                                                                 |
-| `skipGithubRelease`   | ❌ No    | N/A                     | If `true`, skips creating a GitHub release.                                                                                                                                     |
-| `skipPush`            | ❌ No    | N/A                     | If `true`, skips pushing commits and tags to the origin branch.                                                                                                                 |
-| `skipTagsPush`        | ❌ No    | N/A                     | If `true`, skips pushing git tags to the origin branch.                                                                                                                         |
-| `version`             | ✅ Yes   | N/A                     | Specifies the version type: `patch`, `minor`, or `major`.                                                                                                                       |
-| `versionScript`       | ❌ No    | `npx changeset version` | Command to bump the version of the package. Defaults to `npx changeset version`.                                                                                                |
+| Input Name            | Required | Default                 | Description                                                                                                                                                           |
+| --------------------- | -------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `buildScript`         | ❌ No    | `yarn build`            | Command to build the package before release. Defaults to `yarn build`.                                                                                                |
+| `changelog`           | ❌ No    | `""`                    | Text for the changelog to include in the release.                                                                                                                     |
+| `commitScript`        | ❌ No    | N/A                     | Command to commit changes (e.g., version bumps, changelogs). If not provided, the commit message defaults to: `"chore: Release <package> v<version> [skip release]"`. |
+| `ghToken`             | ✅ Yes   | N/A                     | GitHub token with read/write permissions for release operations.                                                                                                      |
+| `package`             | ✅ Yes   | N/A                     | The package name for correct versioning.                                                                                                                              |
+| `packagePath`         | ✅ Yes   | N/A                     | Path to the folder of the package to be released.                                                                                                                     |
+| `preid`               | ❌ No    | N/A                     | Preid to specify a prerelease version tag (e.g., `beta`, `rc`).                                                                                                       |
+| `prerelease`          | ❌ No    | `false`                 | Flag to indicate whether this is a prerelease. If `true`, both `preid` and `version` must be provided.                                                                |
+| `releaseScript`       | ❌ No    | `npx changeset publish` | Command to perform the release action (e.g., deploy or publish). Defaults to `npx changeset publish`.                                                                 |
+| `releasePrivate`      | ❌ No    | `true`                  | Temporarily makes private packages public for release and then restores privacy.                                                                                      |
+| `skipCreateChangelog` | ❌ No    | N/A                     | If set to `true`, changelog creation is skipped.                                                                                                                      |
+| `skipCreateTag`       | ❌ No    | `true`                  | If set to `true`, git tag creation (`package@version`) is skipped. Defaults to `true`, as Changeset auto-creates tags.                                                |
+| `skipGithubRelease`   | ❌ No    | N/A                     | If set to `true`, skips creating a GitHub release.                                                                                                                    |
+| `skipPush`            | ❌ No    | N/A                     | If set to `true`, skips pushing the created commit and tag to the origin branch.                                                                                      |
+| `skipTagsPush`        | ❌ No    | N/A                     | If set to `true`, skips pushing the created tags to the origin branch.                                                                                                |
+| `version`             | ✅ Yes   | N/A                     | The version type for the release: `patch`, `minor`, or `major`.                                                                                                       |
+| `versionScript`       | ❌ No    | `npx changeset version` | Command to bump the package version. Defaults to `npx changeset version`.                                                                                             |
 
 #### Outputs
 
@@ -159,7 +159,7 @@ jobs:
           releaseScript: 'yarn release'
           versionScript: 'npx changeset version'
           skipCreateTag: true
-          skipGheRelease: true
+          skipGithubRelease: true
 ```
 
 **Prerelease (Beta)**
@@ -185,13 +185,13 @@ jobs:
           commitScript: 'git commit -am "chore: Release beta version"'
           releaseScript: 'yarn release'
           versionScript: 'npx changeset version'
-          skipGheRelease: true
+          skipGithubRelease: true
 ```
 
 #### Notes
 
-- Ensure `ghToken` has **read/write** permissions to perform release operations.
-- The action supports both **standard releases** and **prereleases**. When `prerelease` is set to `true`, a `preid` and `version` (e.g., `beta`, `rc`) are required.
-- Default scripts use **changeset** commands, but they can be overridden to fit different workflows.
-- If using **npm** instead of **yarn**, update the `buildScript` accordingly (e.g., `npm run build`).
-- Tags are created in the format: `package@version` unless `skipCreateTag` is set to `true`.
+- `ghToken` must have **read/write** permissions to perform release operations.
+- When `prerelease` is `true`, ensure `preid` and `version` are set (e.g., `beta`, `minor`).
+- The action supports overriding default scripts to adapt to various publishing strategies.
+- For npm users, replace `yarn` commands with appropriate `npm` equivalents.
+- By default, git tags are skipped (`skipCreateTag: true`), since Changeset auto-generates tags. Set to `false` if you prefer manual tag creation.
