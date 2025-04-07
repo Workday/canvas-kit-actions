@@ -32,10 +32,6 @@ inputs:
     required: false
     default: 'npx changeset publish'
     description: 'Command to perform the release action, such as deploying or publishing the package. Default to `npx changeset publish`.'
-  releasePrivate:
-    required: false
-    default: true
-    description: 'Temporarily makes private packages public for release and then restores privacy.'
   skipCreateChangelog:
     required: false
     description: 'If set to`true`, changelog creation is skipped.'
@@ -106,12 +102,6 @@ runs:
       shell: bash
       run: echo "version=$(jq -r '.version' ${{ steps.get_path.outputs.path }})" >> "$GITHUB_OUTPUT"
 
-    - name: Make package public to release
-      if: ${{ inputs.releasePrivate == 'true' }}
-      shell: bash
-      run: |
-        jq '.private = false' ${{ steps.get_path.outputs.path }} > package.tmp.json && mv package.tmp.json ${{ steps.get_path.outputs.path }}
-
     - name: Build new package
       if: ${{ inputs.buildScript }}
       shell: bash
@@ -120,12 +110,6 @@ runs:
     - name: Release
       shell: bash
       run: ${{ inputs.releaseScript }}
-
-    - name: Make package private after release
-      if: ${{ inputs.releasePrivate == 'true' }}
-      shell: bash
-      run: |
-        jq '.private = true' ${{ steps.get_path.outputs.path }} > package.tmp.json && mv package.tmp.json ${{ steps.get_path.outputs.path }}
 
     - name: Create tag
       id: create_tag
