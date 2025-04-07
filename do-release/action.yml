@@ -131,6 +131,7 @@ runs:
       run: git tag -a ${{ steps.create_tag.outputs.tag }} -m "${{ steps.create_tag.outputs.tag }}"
 
     - name: Push changes
+      if: ${{ inputs.skipPush != 'true' }}
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ inputs.ghToken }}
