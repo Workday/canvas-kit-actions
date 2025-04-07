@@ -68,6 +68,20 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Get version from package.json
+      id: get_old_version
+      shell: bash
+      run: echo "version=$(jq -r '.version' ${{ steps.get_path.outputs.path }})" >> "$GITHUB_OUTPUT"
+
+    - name: Generate Changeset
+      uses: Workday/canvas-kit-actions/generate-changeset@v1
+      id: changeset
+      with:
+        token: ${{ inputs.ghToken }}
+        fromRef: '@workday/canvas-tokens-web@${{ steps.get_old_version.outputs.version }}'
+        toRef: ${{ github.ref_name }}
+        tagName: release
+
     - name: Enter pre mode
       if: ${{ inputs.prerelease == 'true' }}
       shell: bash
@@ -76,7 +90,7 @@ runs:
     - name: Generate pre-changelog
       if: ${{ contains(inputs.versionScript, 'changeset') && inputs.skipCreateChangelog != 'true' }}
       shell: bash
-      run: "echo \"---\n'${{ inputs.package }}': ${{ inputs.version }}\n---\n${{ inputs.changelog }}\" > .changeset/pre-changelog.md"
+      run: "echo \"---\n'${{ inputs.package }}': ${{ inputs.version }}\n---\n${{ inputs.changelog || steps.changeset.outputs.body }}\" > .changeset/pre-changelog.md"
 
     - name: Bump version
       shell: bash
