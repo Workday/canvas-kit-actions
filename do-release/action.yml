@@ -64,6 +64,11 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Get package.json path
+      id: get_path
+      shell: bash
+      run: echo "path=${{ inputs.packagePath }}/package.json" >> "$GITHUB_OUTPUT"
+
     - name: Get version from package.json
       id: get_old_version
       shell: bash
@@ -91,11 +96,6 @@ runs:
     - name: Bump version
       shell: bash
       run: ${{ inputs.versionScript }}
-
-    - name: Get package.json path
-      id: get_path
-      shell: bash
-      run: echo "path=${{ inputs.packagePath }}/package.json" >> "$GITHUB_OUTPUT"
 
     - name: Get version from package.json
       id: get_version
