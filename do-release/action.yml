@@ -12,7 +12,7 @@ inputs:
     default: ''
   commitScript:
     required: false
-    description: 'Command to commit changes, typically used for committing version bumps or changelogs. If no provided commit will be released with the next message: `"chore: Release <package> v<version>"`'
+    description: 'Command to commit changes, typically used for committing version bumps or changelogs. If no provided commit will be released with the next message: `"chore: Release <package> v<version> [skip release]"`'
   ghToken:
     required: true
     description: 'GitHub token with read/write permissions for release operations.'
