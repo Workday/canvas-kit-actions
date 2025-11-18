@@ -12,7 +12,7 @@ inputs:
     default: ''
   commitScript:
     required: false
-    description: 'Command to commit changes, typically used for committing version bumps or changelogs. If no provided commit will be released with the next message: `"chore: Release <package> v<version> [skip release]"`'
+    description: 'Command to commit changes, typically used for committing version bumps or changelogs. If no provided commit will be released with the next message: `"chore: Release <package> v<version>"`'
   ghToken:
     required: true
     description: 'GitHub token with read/write permissions for release operations.'
@@ -55,6 +55,26 @@ inputs:
     required: false
     description: 'Command to bump the version of the package. Defaults to `npx changeset version`.'
     default: 'npx changeset version'
+  # New inputs for node / registry / auth
+  nodeVersion:
+    required: false
+    description: 'Node version used for publishing (passed to actions/setup-node).'
+    default: '18'
+  registryUrl:
+    required: false
+    description: 'NPM registry URL to use for publish.'
+    default: 'https://registry.npmjs.org'
+  scope:
+    required: false
+    description: 'NPM scope to configure auth for (e.g., @workday).'
+    default: '@workday'
+  alwaysAuth:
+    required: false
+    description: 'Pass always-auth to setup-node to force auth when accessing registry.'
+    default: true
+  npmToken:
+    required: false
+    description: 'Optional NPM token fallback. If provided, it will be written to ~/.npmrc (used when OIDC is not available).'
 
 outputs:
   releasedVersion:
@@ -101,6 +121,24 @@ runs:
       id: get_version
       shell: bash
       run: echo "version=$(jq -r '.version' ${{ steps.get_path.outputs.path }})" >> "$GITHUB_OUTPUT"
+
+    - name: Setup Node (v3) and configure registry for publish
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.nodeVersion }}
+        registry-url: ${{ inputs.registryUrl }}
+        scope: ${{ inputs.scope }}
+        always-auth: ${{ inputs.alwaysAuth }}
+
+    - name: Fallback: write NPM token to ~/.npmrc if provided
+      if: ${{ inputs.npmToken != '' }}
+      shell: bash
+      run: |
+        echo "${{ inputs.npmToken }}" >/tmp/npm_token_value
+        # Ensure token is written in the correct format for the configured registry
+        echo "//$(echo ${{ inputs.registryUrl }} | sed -E 's#https?://##')/:_authToken=$(cat /tmp/npm_token_value)" > ~/.npmrc
+        rm -f /tmp/npm_token_value
+        echo "Wrote npm token fallback to ~/.npmrc"
 
     - name: Build new package
       if: ${{ inputs.buildScript }}
