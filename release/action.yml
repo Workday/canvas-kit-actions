@@ -82,6 +82,29 @@ runs:
         CHANGESET_BODY: |
           ${{steps.changeset.outputs.body}}
 
+    ## Build for packaging.
+    - name: Build
+      shell: bash
+      run: yarn build
+      env:
+          TSP_SKIP_CACHE: true
+
+    # Build Storybook and extract component stories for Storybook aggregation. This will be used
+    # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
+    # built assets mess up this command
+    - name: Build Storybook
+      shell: bash
+      run: |
+        yarn build-storybook --quiet
+        npx sb extract docs docs/stories.json
+
+    # Publish to npm. Must be run after a build
+    - name: Publish
+      shell: bash
+      run: yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
+      env:
+        NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
+
     ## So far, the changes to to the workspace have not been committed. We'll commit them now and
     ## create a tag
     - name: Commit and add Tag
@@ -93,22 +116,6 @@ runs:
       shell: bash
       run: |
         git log -n 1 --decorate=short
-
-    # Build Storybook and extract component stories for Storybook aggregation. This will be used
-    # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
-    # built assets mess up this command
-    - name: Build Storybook
-      shell: bash
-      run: |
-        yarn build-storybook --quiet
-        npx sb extract docs docs/stories.json
-
-    ## Build for packaging.
-    - name: Build
-      shell: bash
-      run: yarn build
-      env:
-          TSP_SKIP_CACHE: true
 
     # Push both the commit and tag created by Lerna's version command using a PAT
     - name: Push changes
@@ -130,13 +137,6 @@ runs:
           ${{steps.changeset.outputs.body}}
         draft: false
         prerelease: false
-
-    # Publish to npm. Must be run after a build
-    - name: Publish
-      shell: bash
-      run: yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
-      env:
-        NODE_AUTH_TOKEN: '${{inputs.publish_token}}'
 
     ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
     - name: Publish Storybook
