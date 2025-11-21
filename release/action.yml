@@ -8,9 +8,6 @@ inputs:
   gh_rw_token:
     required: true
     description: 'A personal access token with read-write permissions.'
-  publish_token:
-    required: false
-    description: 'Optional: NPM token for authentication. If not provided, OIDC will be used (requires npm 11.5.1+ and trusted publishing setup).'
   chromatic_project_token:
     required: true
     description: 'Chromatic project token to deploy a storybook.'
