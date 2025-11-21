@@ -91,13 +91,6 @@ runs:
         CHANGESET_BODY: |
           ${{steps.changeset.outputs.body}}
 
-    ## Build for packaging.
-    - name: Build
-      shell: bash
-      run: yarn build
-      env:
-          TSP_SKIP_CACHE: true
-
     # Build Storybook and extract component stories for Storybook aggregation. This will be used
     # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
     # built assets mess up this command
@@ -106,6 +99,13 @@ runs:
       run: |
         yarn build-storybook --quiet
         npx sb extract docs docs/stories.json
+
+    ## Build for packaging.
+    - name: Build
+      shell: bash
+      run: yarn build
+      env:
+          TSP_SKIP_CACHE: true
 
     # Publish to npm. Must be run after a build
     # If publish_token is provided, use it. Otherwise, rely on OIDC (npm 11.5.1+)
