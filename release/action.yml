@@ -1,38 +1,29 @@
 name: 'Release'
-
 description: 'Automate a release'
-
 author: 'Workday'
-
 inputs:
   gh_token:
     required: true
     description: 'An authentication token for github.com API requests.'
-
   gh_rw_token:
     required: true
     description: 'A personal access token with read-write permissions.'
-
   publish_token:
     required: false
     description: 'Optional: NPM token for authentication. If not provided, OIDC will be used (requires npm 11.5.1+ and trusted publishing setup).'
-
   chromatic_project_token:
     required: true
     description: 'Chromatic project token to deploy a storybook.'
-
   version:
     required: false
     description: 'The package version override (example: "8.1.2"). Leave blank if you want to make patch release.'
     default: 'patch'
-
   toRef:
     required: false
     description: 'Git ref that marks the end of changelog generation comparison to overwrite default value. Tag, SHA, or branch'
 
 runs:
   using: 'composite'
-
   steps:
     ## A `yarn bump` will create a commit and a tag. We need to set up the git user to do this.
     ## We'll make that user be the github-actions user.
@@ -91,6 +82,18 @@ runs:
         CHANGESET_BODY: |
           ${{steps.changeset.outputs.body}}
 
+    ## So far, the changes to to the workspace have not been committed. We'll commit them now and
+    ## create a tag
+    - name: Commit and add Tag
+      shell: bash
+      run: |
+        git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
+
+    - name: See git log
+      shell: bash
+      run: |
+        git log -n 1 --decorate=short
+
     # Build Storybook and extract component stories for Storybook aggregation. This will be used
     # for Chromatic rebaselining and publishing to GH Pages. Should be before `yarn build` since
     # built assets mess up this command
@@ -106,26 +109,6 @@ runs:
       run: yarn build
       env:
           TSP_SKIP_CACHE: true
-
-    # Publish to npm. Must be run after a build
-    # If publish_token is provided, use it. Otherwise, rely on OIDC (npm 11.5.1+)
-    - name: Publish
-      shell: bash
-      run: yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
-      env:
-        NODE_AUTH_TOKEN: ${{ inputs.publish_token != '' && inputs.publish_token || '' }}
-
-    ## So far, the changes to to the workspace have not been committed. We'll commit them now and
-    ## create a tag
-    - name: Commit and add Tag
-      shell: bash
-      run: |
-        git add . && git commit -m "chore: Release v${{steps.new-tag.outputs.tag}} [skip release]" && git tag -a v${{steps.new-tag.outputs.tag}} -m "v${{steps.new-tag.outputs.tag}}"
-
-    - name: See git log
-      shell: bash
-      run: |
-        git log -n 1 --decorate=short
 
     # Push both the commit and tag created by Lerna's version command using a PAT
     - name: Push changes
@@ -147,6 +130,13 @@ runs:
           ${{steps.changeset.outputs.body}}
         draft: false
         prerelease: false
+
+    # Publish to npm. Must be run after a build
+    - name: Publish
+      shell: bash
+      run: yarn lerna publish from-package --yes --dist-tag ${{steps.extract-branch.outputs.branch == 'master' && 'latest' || 'support'}}
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.publish_token != '' && inputs.publish_token || '' }}
 
     ## The master branch is used for static Storybook documentation in the `gh-pages` branch.
     - name: Publish Storybook
