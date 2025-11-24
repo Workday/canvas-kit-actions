@@ -10,5 +10,5 @@ inputs:
     description: 'The slack message'
 
 runs:
-  using: 'node22'
+  using: 'node20'
   main: '../dist/actions/reportFailure.js'
