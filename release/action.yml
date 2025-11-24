@@ -33,14 +33,14 @@ runs:
     ## Capture the previous tag and store it for later use
     - name: Get previous tag
       id: previous-tag
-      run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+      run: echo "tag=$(node -p 'require("./lerna.json").version')" >> "$GITHUB_OUTPUT"
       shell: bash
 
     ## `github.ref` is in the form of `refs/head/{name}`. This step extracts `{name}` and saves it
     ## as an output for later use
     - name: Extract branch name
       id: extract-branch
-      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+      run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Validate branch name
@@ -57,7 +57,7 @@ runs:
     - name: Get new tag
       id: new-tag
       shell: bash
-      run: echo "::set-output name=tag::$(node -p 'require("./lerna.json").version')"
+      run: echo "tag=$(node -p 'require("./lerna.json").version')" >> "$GITHUB_OUTPUT"
 
     ## Generate a changeset based on rules of the Canvas Kit repository
     - name: Generate Changeset
