@@ -8,5 +8,5 @@ outputs:
   branch:
     description: 'The next branch name'
 runs:
-  using: 'node22'
+  using: 'node20'
   main: '../dist/actions/getNextBranch.js'
