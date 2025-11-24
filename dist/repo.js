@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRepo = void 0;
+exports.getRepo = getRepo;
 const lib_1 = require("./lib");
 const gql = (strings) => strings.raw[0];
 function getRepo({ token, owner, repo }) {
@@ -167,4 +167,3 @@ function getRepo({ token, owner, repo }) {
     };
     return repository;
 }
-exports.getRepo = getRepo;

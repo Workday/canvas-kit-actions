@@ -801,7 +801,7 @@ describe('utils', () => {
         .toString()
         .trim() // trim to remove issue with autoformatting
 
-      jest.useFakeTimers('modern').setSystemTime(new Date('2021-09-05'))
+      jest.useFakeTimers({ now: new Date('2021-09-05') })
       const expected = getChangelogEntry('Workday', 'canvas-kit', getCommitsData.commits, 'v5.2.0')
 
       expect(expected).toEqual(releaseExample)
@@ -810,7 +810,7 @@ describe('utils', () => {
 
   describe('getReleaseTitle', () => {
     it('should create a release title', () => {
-      jest.useFakeTimers('modern').setSystemTime(new Date('2021-09-05'))
+      jest.useFakeTimers({ now: new Date('2021-09-05') })
       const expected = getReleaseTitle('Workday', 'canvas-kit', 'v5.2.0')
 
       expect(expected).toEqual(
