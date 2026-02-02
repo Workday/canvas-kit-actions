@@ -489,13 +489,15 @@ export function getNextBranch(branch: string) {
   switch (branch) {
     case 'support':
       return 'master'
+    case 'main':
+      return 'prerelease/minor'
     case 'master':
       return 'prerelease/minor'
     case 'prerelease/minor':
       return 'prerelease/major'
     default:
       throw Error(
-        `Could not determine a forward merge branch for "${branch}". Supported branch inputs are support, master, and prerelease/minor`,
+        `Could not determine a forward merge branch for "${branch}". Supported branch inputs are support, master, main, and prerelease/minor`,
       )
   }
 }
