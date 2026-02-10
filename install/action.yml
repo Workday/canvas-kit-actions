@@ -21,7 +21,7 @@ runs:
     - name: Get Cypress Version
       shell: bash
       id: cypress-version
-      run: echo "::set-output name=version::$(node ${{ github.action_path }}/get-cypress-version.js)"
+      run: echo "version=$(node ${{ github.action_path }}/get-cypress-version.js)" >> "$GITHUB_OUTPUT"
 
     # ## The caching steps create a cache key based on the OS and hash of the yarn.lock file. A
     # ## cache hit will copy files from Github cache into the `node_modules` and `.cache/cypress`
