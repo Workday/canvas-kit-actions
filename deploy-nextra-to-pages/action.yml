@@ -1,0 +1,58 @@
+name: 'Deploy Nextra to GH Pages'
+description: 'Action is deploying Nextra docs to GH Pages'
+author: 'Workday'
+
+inputs:
+  buildAssets:
+    required: false
+    description: 'Command to build additional resources used in documentation, such as assets, tokens, components, etc.'
+  buildDocs:
+    required: true
+    description: 'Command to build the documentation.'
+  commit:
+    required: true
+    description: 'Commit message used to commit docs folder changes.'
+  baseRef:
+    required: false
+    description: 'Base branch to pull changes from. Defaults to `main`.'
+    default: main
+  moveDocs:
+    required: false
+    description: 'Boolean value indicating whether the nextra build output folder content should be moved to the root "docs" folder.'
+  outputPath:
+    required: false
+    description: 'Path to the folder where the Nextra build output is generated.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Sync with main
+      shell: bash
+      run: git pull origin ${{ inputs.baseRef }}
+
+    - name: Build assets
+      if: ${{ inputs.buildAssets }}
+      shell: bash
+      run: ${{ inputs.buildAssets }}
+
+    - name: Build docs
+      shell: bash
+      run: ${{ inputs.buildDocs }}
+
+    - name: Move content to docs
+      if: ${{ inputs.moveDocs == 'true' }}
+      shell: bash
+      run: |
+        mkdir -p ./docs
+        mv ${{ inputs.outputPath }}/* ./docs/
+
+    - name: Add .nojekyll
+      shell: bash
+      run: touch ./docs/.nojekyll
+
+    - name: Save changes
+      if: ${{ inputs.commit }}
+      shell: bash
+      run: |
+        git add docs
+        git commit -m "${{ inputs.commit }}"
