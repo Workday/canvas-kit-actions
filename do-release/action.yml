@@ -79,7 +79,7 @@ runs:
       id: changeset
       with:
         token: ${{ inputs.ghToken }}
-        fromRef: '@workday/canvas-tokens-web@${{ steps.get_old_version.outputs.version }}'
+        fromRef: '${{ inputs.package }}@${{ steps.get_old_version.outputs.version }}'
         toRef: ${{ github.ref_name }}
         tagName: release
 
