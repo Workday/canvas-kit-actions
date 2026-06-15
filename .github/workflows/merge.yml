@@ -41,5 +41,5 @@ jobs:
       - name: Publish Action
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          branch: v1
+          branch: v2
           folder: .
