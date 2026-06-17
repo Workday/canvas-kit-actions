@@ -75,7 +75,7 @@ runs:
       run: echo "version=$(jq -r '.version' ${{ steps.get_path.outputs.path }})" >> "$GITHUB_OUTPUT"
 
     - name: Generate Changeset
-      uses: Workday/canvas-kit-actions/generate-changeset@v1
+      uses: Workday/canvas-kit-actions/generate-changeset@v2
       id: changeset
       with:
         token: ${{ inputs.ghToken }}
