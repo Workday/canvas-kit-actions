@@ -16,7 +16,7 @@ Failure of these checks will display an error message describing what check fail
 #### Example
 
 ```yml
-- uses: Workday/canvas-kit-actions/generate-changeset@v1
+- uses: Workday/canvas-kit-actions/generate-changeset@v2
   with:
     token: ${{ secrets.GITHUB_TOKEN }} # needs read access
 ```
@@ -28,7 +28,7 @@ Given a `fromRef`, a `toRef`, and a `tagName`, this action will perform a compar
 #### Example
 
 ```yml
-- uses: Workday/canvas-kit-actions/generate-changeset@v1
+- uses: Workday/canvas-kit-actions/generate-changeset@v2
   id: generate-changeset
   with:
     token: ${{ secrets.GITHUB_TOKEN }} # needs read access
@@ -55,7 +55,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: Workday/canvas-kit-actions/close-related-issues@v1
+      - uses: Workday/canvas-kit-actions/close-related-issues@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: Workday/canvas-kit-actions/report-failure@v1
+      - uses: Workday/canvas-kit-actions/report-failure@v2
         if: failure()
         with:
           slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: Workday/canvas-kit-actions/release@v1
+      - uses: Workday/canvas-kit-actions/release@v2
         with:
           gh_token: ${{ secrets.GITHUB_TOKEN }}
           gh_rw_token: ${{ secrets.GH_RW_TOKEN }}
@@ -147,7 +147,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Release package
-        uses: Workday/canvas-kit-actions/do-release@v1
+        uses: Workday/canvas-kit-actions/do-release@v2
         with:
           ghToken: ${{ secrets.GITHUB_TOKEN }}
           version: 'minor'
@@ -172,7 +172,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Beta Release
-        uses: Workday/canvas-kit-actions/do-release@v1
+        uses: Workday/canvas-kit-actions/do-release@v2
         with:
           ghToken: ${{ secrets.GITHUB_TOKEN }}
           version: 'minor'

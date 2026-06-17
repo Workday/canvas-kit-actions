@@ -7,13 +7,13 @@ This repository contains custom actions from http://github.com/Workday/canvas-ki
 Actions within this repo are invoked by the `uses` keyword in a workflow script. For example: https://github.com/Workday/canvas-kit/blob/bd507e1dce38a8325c0e4eedd45c2987a00a6299/.github/workflows/lint-pull-request.yml#L29
 
 ```markdown
-- uses: Workday/canvas-kit-actions/verify-pull-request@v1
+- uses: Workday/canvas-kit-actions/verify-pull-request@v2
 ```
 
 Let's break down what's happening. The `uses` keyword of a GitHub Action targets a real Github repository. The
-`Workday/canvas-kit-actions` refers the the repository path. In this example, https://github.com/Workday/canvas-kit-actions. The `@v1` refers to a tag or a branch. In this example, https://github.com/Workday/canvas-kit-actions/tree/v1. The `/verify-pull-request` is a subdirectory within the repository at the branch/tag. In this example, https://github.com/Workday/canvas-kit-actions/tree/v1/verify-pull-request
+`Workday/canvas-kit-actions` refers the the repository path. In this example, https://github.com/Workday/canvas-kit-actions. The `@v2` refers to a tag or a branch. In this example, https://github.com/Workday/canvas-kit-actions/tree/v2. The `/verify-pull-request` is a subdirectory within the repository at the branch/tag. In this example, https://github.com/Workday/canvas-kit-actions/tree/v2/verify-pull-request
 
-In this GitHub Action repository, source code is in the `main` branch an `v1` is a pre-compiled branch. The `v1` branch is auto deployed on all changes to the `main` branch via a GitHub Action and deployed using GitHub Pages. The difference between the `main` and `v1` branches is the `v1` has a `dist` directory which is the pre-compiled code for real-world use.
+In this GitHub Action repository, source code is in the `main` branch an `v2` is a pre-compiled branch. The `v2` branch is auto deployed on all changes to the `main` branch via a GitHub Action and deployed using GitHub Pages. The difference between the `main` and `v2` branches is the `v2` has a `dist` directory which is the pre-compiled code for real-world use.
 
 Inside the Github Action referred to by `uses`, there must be an `action.yml` file. Let's check out the `verify-pull-request` action file here: https://github.com/Workday/canvas-kit-actions/blob/main/verify-pull-request/action.yml
 

@@ -61,7 +61,7 @@ runs:
 
     ## Generate a changeset based on rules of the Canvas Kit repository
     - name: Generate Changeset
-      uses: Workday/canvas-kit-actions/generate-changeset@v1
+      uses: Workday/canvas-kit-actions/generate-changeset@v2
       id: changeset
       with:
         token: ${{ inputs.gh_token }}
