@@ -108,7 +108,7 @@ runs:
 
     # Push both the commit and tag created by Lerna's version command using a PAT
     - name: Push changes
-      uses: ad-m/github-push-action@master
+      uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0
       with:
         github_token: ${{ inputs.gh_rw_token }}
         branch: ${{ github.ref }}

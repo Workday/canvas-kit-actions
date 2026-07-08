@@ -13,7 +13,7 @@ runs:
     ## This step installs node and sets up several matchers (regex matching for Github
     ## Annotations). See
     ## https://github.com/actions/setup-node/blob/25316bbc1f10ac9d8798711f44914b1cf3c4e954/src/main.ts#L58-L65
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
       with:
         node-version: ${{ inputs.node_version }}
 
@@ -28,14 +28,14 @@ runs:
     # ## folders. A cache hit will skip the cache steps
     # - name: Cache node modules
     #   id: yarn-cache
-    #   uses: actions/cache@v5
+    #   uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
     #   with:
     #     path: node_modules
     #     key: ${{ runner.os }}-${{ inputs.node_version }}-node-modules-hash-${{ hashFiles('yarn.lock') }}
 
     # - name: Cache Cypress
     #   id: cypress-cache
-    #   uses: actions/cache@v5
+    #   uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
     #   with:
     #     path: .cache/cypress
     #     key: ${{ runner.os }}-${{ inputs.node_version }}-cypress-cache-version-${{ steps.cypress-version.outputs.version }}
