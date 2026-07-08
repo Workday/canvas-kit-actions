@@ -130,7 +130,7 @@ runs:
 
     - name: Push changes
       if: ${{ inputs.skipPush != 'true' }}
-      uses: ad-m/github-push-action@master
+      uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0
       with:
         github_token: ${{ inputs.ghToken }}
         branch: ${{ github.ref }}
@@ -138,7 +138,7 @@ runs:
 
     - name: Create Github Release
       if: ${{ inputs.skipGithubRelease != 'true' }}
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
       env:
         GITHUB_TOKEN: ${{ inputs.ghToken }}
       with:
